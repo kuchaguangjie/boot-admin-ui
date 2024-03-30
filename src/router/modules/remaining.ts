@@ -12,6 +12,16 @@ export default [
     }
   },
   {
+    path: "/admin",
+    name: "LoginAdmin",
+    component: () => import("@/views/login/admin.vue"),
+    meta: {
+      title: "管理员登录",
+      showLink: false,
+      rank: 101
+    }
+  },
+  {
     path: "/redirect",
     component: Layout,
     meta: {

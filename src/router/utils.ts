@@ -19,7 +19,6 @@ import {
 import { getConfig } from "@/config";
 import type { menuType } from "@/layout/types";
 import { buildHierarchyTree } from "@/utils/tree";
-import { userKey, type DataInfo } from "@/utils/auth";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 const IFrame = () => import("@/layout/frameView.vue");
@@ -27,7 +26,8 @@ const IFrame = () => import("@/layout/frameView.vue");
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
 
 // 动态路由
-import { getAsyncRoutes } from "@/api/routes";
+import { useAuthStoreHook } from "@/store/modules/auth";
+import { currentRoutes } from "@/api/auth";
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo;
@@ -83,8 +83,9 @@ function isOneOfArray(a: Array<string>, b: Array<string>) {
 
 /** 从localStorage里取出当前登陆用户的角色roles，过滤无权限的菜单 */
 function filterNoPermissionTree(data: RouteComponent[]) {
-  const currentRoles =
-    storageLocal().getItem<DataInfo<number>>(userKey)?.roles ?? [];
+  // const currentRoles =
+  //   storageLocal().getItem<DataInfo<number>>(userKey)?.roles ?? [];
+  const currentRoles = useAuthStoreHook().getRoles;
   const newTree = cloneDeep(data).filter((v: any) =>
     isOneOfArray(v.meta?.roles, currentRoles)
   );
@@ -194,19 +195,27 @@ function initRouter() {
       });
     } else {
       return new Promise(resolve => {
-        getAsyncRoutes().then(({ data }) => {
-          handleAsyncRoutes(cloneDeep(data));
-          storageLocal().setItem(key, data);
-          resolve(router);
-        });
+        useAuthStoreHook()
+          .refreshUserInfo()
+          .then(() => {
+            currentRoutes().then(res => {
+              handleAsyncRoutes(cloneDeep(res.data));
+              storageLocal().setItem(key, res.data);
+              resolve(router);
+            });
+          });
       });
     }
   } else {
     return new Promise(resolve => {
-      getAsyncRoutes().then(({ data }) => {
-        handleAsyncRoutes(cloneDeep(data));
-        resolve(router);
-      });
+      useAuthStoreHook()
+        .refreshUserInfo()
+        .then(() => {
+          currentRoutes().then(res => {
+            handleAsyncRoutes(cloneDeep(res.data));
+            resolve(router);
+          });
+        });
     });
   }
 }
@@ -351,7 +360,14 @@ function getAuths(): Array<string> {
 function hasAuth(value: string | Array<string>): boolean {
   if (!value) return false;
   /** 从当前路由的`meta`字段里获取按钮级别的所有自定义`code`值 */
-  const metaAuths = getAuths();
+  let metaAuths = getAuths();
+  // 认证用户的权限
+  const authPermission = useAuthStoreHook().getPermissions;
+  if (!metaAuths) {
+    metaAuths = authPermission;
+  } else {
+    metaAuths = [...metaAuths, ...authPermission];
+  }
   if (!metaAuths) return false;
   const isAuths = isString(value)
     ? metaAuths.includes(value)

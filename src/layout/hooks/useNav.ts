@@ -10,8 +10,8 @@ import { useRouter, useRoute } from "vue-router";
 import { router, remainingPaths } from "@/router";
 import { computed, type CSSProperties } from "vue";
 import { useAppStoreHook } from "@/store/modules/app";
-import { useUserStoreHook } from "@/store/modules/user";
 import { usePermissionStoreHook } from "@/store/modules/permission";
+import { useAuthStoreHook } from "@/store/modules/auth";
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill";
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill";
 
@@ -38,7 +38,7 @@ export function useNav() {
 
   /** 用户名 */
   const username = computed(() => {
-    return useUserStoreHook()?.username;
+    return useAuthStoreHook().getUserInfo?.username;
   });
 
   const avatarsStyle = computed(() => {
@@ -71,7 +71,7 @@ export function useNav() {
 
   /** 退出登录 */
   function logout() {
-    useUserStoreHook().logOut();
+    useAuthStoreHook().logout();
   }
 
   function backTopMenu() {
