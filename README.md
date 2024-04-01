@@ -4,6 +4,13 @@
 > 和[Vue3](https://v3.cn.vuejs.org/)的`SAAS`管理后台开源项目，项目采用前后端分离的模式, 的开源项目，项目采用前后端分离的模式,
 > 前端框架使用[vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)
 
+## 开源地址
+
+|        | 前端                                                  | 后端                                               |
+| ------ | ----------------------------------------------------- | -------------------------------------------------- |
+| Github | [boot-admin](https://github.com/hb0730/boot-admin-ui) | [boot-admin](https://github.com/hb0730/boot-admin) |
+| Gitee  | [boot-admin](https://gitee.com/hb0730/boot-admin-ui)  | [boot-admin](https://gitee.com/hb0730/boot-admin)  |
+
 ## 项目结构
 
 ```shell
