@@ -32,6 +32,10 @@ const props = {
   /** 控件尺寸	 */
   size: {
     type: String as PropType<"small" | "default" | "large">
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 };
 
@@ -58,6 +62,7 @@ export default defineComponent({
     }
 
     function handleChange({ option, index }, event: Event) {
+      if (props.disabled) return;
       if (option.disabled) return;
       event.preventDefault();
       curIndex.value = index;
@@ -66,6 +71,7 @@ export default defineComponent({
     }
 
     function handleMouseenter({ option, index }, event: Event) {
+      if (props.disabled) return;
       event.preventDefault();
       curMouseActive.value = index;
       if (option.disabled || curIndex.value === index) {
@@ -78,6 +84,7 @@ export default defineComponent({
     }
 
     function handleMouseleave(_, event: Event) {
+      if (props.disabled) return;
       event.preventDefault();
       curMouseActive.value = -1;
     }
@@ -123,7 +130,8 @@ export default defineComponent({
             ref={`labelRef${index}`}
             class={[
               "pure-segmented-item",
-              option?.disabled && "pure-segmented-item-disabled"
+              (option?.disabled || props.disabled) &&
+                "pure-segmented-item-disabled"
             ]}
             style={{
               background:

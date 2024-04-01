@@ -11,7 +11,7 @@ import {
   showLinkOptions,
   showParentOptions
 } from "./utils/enums";
-import { listTree } from "@/api/basic/permission";
+import { listTree } from "@/api/tenant/permission";
 import { IconSelect } from "@/components/ReIcon";
 
 const props = withDefaults(defineProps<FormProps>(), {

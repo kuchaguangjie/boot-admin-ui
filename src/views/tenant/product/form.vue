@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<FormProps>(), {
     name: "",
     principal: "",
     contact: "",
+    siteNum: 0,
+    accountNum: 0,
     enabled: true,
     description: ""
   })
@@ -61,6 +63,28 @@ defineExpose({ getRef });
         v-model="newFormInline.contact"
         clearable
         placeholder="请输入产品负责人联系方式"
+      />
+    </el-form-item>
+
+    <el-form-item label="站点数量" prop="siteNum">
+      <el-input-number
+        v-model="newFormInline.siteNum"
+        :min="0"
+        :max="999999"
+        controls-position="right"
+        placeholder="请输入站点数量"
+        style="width: 100%"
+      />
+    </el-form-item>
+
+    <el-form-item label="账号数量" prop="accountNum">
+      <el-input-number
+        v-model="newFormInline.accountNum"
+        :min="0"
+        :max="999999"
+        controls-position="right"
+        placeholder="请输入账号数量"
+        style="width: 100%"
       />
     </el-form-item>
 

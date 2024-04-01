@@ -4,6 +4,8 @@ interface FormItemProps {
   name?: string;
   principal?: string;
   contact?: string;
+  siteNum?: number;
+  accountNum?: number;
   enabled?: boolean;
   description?: string;
 }

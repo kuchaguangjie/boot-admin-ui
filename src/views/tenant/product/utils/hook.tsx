@@ -128,6 +128,8 @@ export function useProduct() {
           name: data?.name ?? "",
           principal: data?.principal ?? "",
           contact: data?.contact ?? "",
+          siteNum: data?.siteNum ?? 0,
+          accountNum: data?.accountNum ?? 0,
           enabled: data?.enabled ?? true,
           description: data?.description ?? ""
         }

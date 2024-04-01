@@ -1,7 +1,17 @@
-// 抽离可公用的工具函数等用于系统管理页面逻辑
-import { computed } from "vue";
 import { useDark } from "@pureadmin/utils";
-import type { OptionsType } from "@/components/ReSegmented";
+import { computed } from "vue";
+
+export const enabledOptions = [
+  {
+    label: "启用",
+    value: true
+  },
+  {
+    label: "禁用",
+    value: false
+  }
+];
+export const enabledMap = { true: "启用", false: "禁用" };
 
 export function usePublicHooks() {
   const { isDark } = useDark();
@@ -55,69 +65,3 @@ export function usePublicHooks() {
     tagEnabledStyle
   };
 }
-
-export const enabledOptions = [
-  {
-    label: "启用",
-    value: true
-  },
-  {
-    label: "禁用",
-    value: false
-  }
-];
-export const enabledMap = { true: "启用", false: "禁用" };
-
-export const genderOptions = [
-  {
-    label: "男生",
-    value: 1
-  },
-  {
-    label: "女生",
-    value: 2
-  },
-  {
-    label: "保密",
-    value: 0
-  }
-];
-export const genderMap = { 1: "男生", 2: "女生", 0: "保密" };
-
-export const menuTypeOptions: Array<OptionsType> = [
-  {
-    label: "菜单",
-    value: 1
-  },
-  {
-    label: "iframe",
-    value: 2
-  },
-  {
-    label: "外链",
-    value: 3
-  },
-  {
-    label: "按钮",
-    value: 4
-  }
-];
-export const menuTypeOptionMap = {
-  1: "菜单",
-  2: "iframe",
-  3: "外链",
-  4: "按钮"
-};
-
-export const getMenuType = (type, text = false) => {
-  switch (type) {
-    case 1:
-      return text ? "菜单" : "primary";
-    case 2:
-      return text ? "iframe" : "warning";
-    case 3:
-      return text ? "外链" : "danger";
-    case 4:
-      return text ? "按钮" : "info";
-  }
-};
