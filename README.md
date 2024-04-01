@@ -1,43 +1,53 @@
-<h1>vue-pure-admin精简版（非国际化版本）</h1>
+# BOOT ADMIN
 
-[![license](https://img.shields.io/github/license/pure-admin/vue-pure-admin.svg)](LICENSE)
+> [boot-admin](https://github.com/hb0730/boot-admin)是一个基于[Spring Boot3](https://spring.io/projects/spring-boot)
+> 和[Vue3](https://v3.cn.vuejs.org/)的`SAAS`管理后台开源项目，项目采用前后端分离的模式, 的开源项目，项目采用前后端分离的模式,
+> 前端框架使用[vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)
 
-**中文** | [English](./README.en-US.md)
+## 项目结构
 
-## 介绍
+```shell
+├── app  # core 核心应用
+├── api  # api RPC 接口
+├── commons # 公共模块 相关组件
+├── web # web 管理后台
+```
 
-精简版是基于 [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin) 提炼出的架子，包含主体功能，更适合实际项目开发，打包后的大小在全局引入 [element-plus](https://element-plus.org) 的情况下仍然低于 `2.3MB`，并且会永久同步完整版的代码。开启 `brotli` 压缩和 `cdn` 替换本地库模式后，打包大小低于 `350kb`
+## 项目特点
 
-## 版本选择
+- 前后端分离
+- 前端采用[vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)
+- 后端采用[Spring Boot3](https://spring.io/projects/spring-boot)
+- 采用 [Spring JPA](https://spring.io/projects/spring-data-jpa) 作为数据持久层
+- 采用 [Spring Security](https://spring.io/projects/spring-security) 作为安全框架
+- 采用 [Sofa RPC](https://github.com/alipay/sofa-rpc) 作为RPC框架
 
-当前是非国际化版本，如果您需要国际化版本 [请点击](https://github.com/pure-admin/pure-admin-thin/tree/i18n)
+## 端口说明
 
-## 配套视频
+| 端口  | 说明               |
+| ----- | ------------------ |
+| 9001  | App应用端口        |
+| 9002  | Web应用端口        |
+| 9003  | Msg应用端口        |
+| 9004  | Job应用端口        |
+| 9005  | Open应用端口       |
+| 12200 | Sofa RPC Bolt端口  |
+| 8341  | Sofa RPC Rest端口  |
+| 12300 | Sofa RPC H2c端口   |
+| 20880 | Sofa RPC Dubbo端口 |
 
-[点我查看 UI 设计](https://www.bilibili.com/video/BV17g411T7rq)  
-[点我查看快速开发教程](https://www.bilibili.com/video/BV1kg411v7QT)
+## 预览地址
 
-## 配套保姆级文档
+**在线服务部署海外环境**
 
-[点我查看 vue-pure-admin 文档](https://yiming_chang.gitee.io/pure-admin-doc)  
-[点我查看 @pureadmin/utils 文档](https://pure-admin-utils.netlify.app)
+### 管理端/超级管理员端
 
-## 优质服务、软件外包、赞助支持
+> <https://boot-admin.hb0730.com/#/admin>
+> 用户名: superadmin
+> 密码: Admin123456
 
-[点我查看详情](https://yiming_chang.gitee.io/pure-admin-doc/pages/service/)
+### 租户端/履约端
 
-## 预览
-
-[查看预览](https://pure-admin-thin.netlify.app/#/login)
-
-## 维护者
-
-[xiaoxian521](https://github.com/xiaoxian521)
-
-## ⚠️ 注意
-
-精简版不接受任何 `issues` 和 `pr`，如果有问题请到完整版 [issues](https://github.com/pure-admin/vue-pure-admin/issues/new/choose) 去提，谢谢！
-
-## 许可证
-
-[MIT © 2020-present, pure-admin](./LICENSE)
+> <https://boot-admin.hb0730.com>
+> 用户名: 13111111111
+> 密码: Admin123456
