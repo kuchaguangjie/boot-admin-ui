@@ -8,7 +8,11 @@ import * as permissionApi from "@/api/sys/permission";
 import { message } from "@/utils/message";
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import { addDrawer } from "@/components/ReDrawer";
-import { menuTypeOptionMap, menuTypeOptions } from "./enums";
+import {
+  getMenuType,
+  menuTypeOptionMap,
+  menuTypeOptions
+} from "@/utils/constants";
 
 export function useMenu(tableRef: Ref) {
   const permission = reactive<any>({
@@ -30,19 +34,6 @@ export function useMenu(tableRef: Ref) {
   });
   const formRef = ref();
   let tableMaps = ref(new Map());
-
-  const getMenuType = (type, text = false) => {
-    switch (type) {
-      case 1:
-        return text ? "菜单" : "primary";
-      case 2:
-        return text ? "iframe" : "warning";
-      case 3:
-        return text ? "外链" : "danger";
-      case 4:
-        return text ? "按钮" : "info";
-    }
-  };
 
   const formItems: SearchFormItems = [
     {

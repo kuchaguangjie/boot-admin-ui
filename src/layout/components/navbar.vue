@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Search from "./search/index.vue";
-import Notice from "./notice/index.vue";
+// import Notice from "./notice/index.vue";
+import Notice from "./notify/index.vue";
 import mixNav from "./sidebar/mixNav.vue";
 import { useNav } from "@/layout/hooks/useNav";
 import FullScreen from "./sidebar/fullScreen.vue";

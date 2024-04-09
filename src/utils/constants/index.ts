@@ -1,3 +1,4 @@
+import type { OptionsType } from "@/components/ReSegmented";
 import { useDark } from "@pureadmin/utils";
 import { computed } from "vue";
 
@@ -65,3 +66,123 @@ export function usePublicHooks() {
     tagEnabledStyle
   };
 }
+
+export const menuTypeOptions: Array<OptionsType> = [
+  {
+    label: "菜单",
+    value: 1
+  },
+  {
+    label: "iframe",
+    value: 2
+  },
+  {
+    label: "外链",
+    value: 3
+  },
+  {
+    label: "按钮",
+    value: 4
+  }
+];
+export const menuTypeOptionMap = {
+  1: "菜单",
+  2: "iframe",
+  3: "外链",
+  4: "按钮"
+};
+
+export const menuShowLinkOptions: Array<OptionsType> = [
+  {
+    label: "显示",
+    tip: "会在菜单中显示",
+    value: true
+  },
+  {
+    label: "隐藏",
+    tip: "不会在菜单中显示",
+    value: false
+  }
+];
+
+export const menuKeepAliveOptions: Array<OptionsType> = [
+  {
+    label: "缓存",
+    tip: "会保存该页面的整体状态，刷新后会清空状态",
+    value: true
+  },
+  {
+    label: "不缓存",
+    tip: "不会保存该页面的整体状态",
+    value: false
+  }
+];
+
+export const menuHiddenTagOptions: Array<OptionsType> = [
+  {
+    label: "允许",
+    tip: "当前菜单名称或自定义信息允许添加到标签页",
+    value: false
+  },
+  {
+    label: "禁止",
+    tip: "当前菜单名称或自定义信息禁止添加到标签页",
+    value: true
+  }
+];
+
+export const menuShowParentOptions: Array<OptionsType> = [
+  {
+    label: "显示",
+    tip: "会显示父级菜单",
+    value: true
+  },
+  {
+    label: "隐藏",
+    tip: "不会显示父级菜单",
+    value: false
+  }
+];
+
+export const menuFrameLoadingOptions: Array<OptionsType> = [
+  {
+    label: "开启",
+    tip: "有首次加载动画",
+    value: true
+  },
+  {
+    label: "关闭",
+    tip: "无首次加载动画",
+    value: false
+  }
+];
+
+export const getMenuType = (type, text = false) => {
+  switch (type) {
+    case 1:
+      return text ? "菜单" : "primary";
+    case 2:
+      return text ? "iframe" : "warning";
+    case 3:
+      return text ? "外链" : "danger";
+    case 4:
+      return text ? "按钮" : "info";
+  }
+};
+
+export const genderMap = { 1: "男生", 2: "女生", 0: "保密" };
+
+export const genderOptions = [
+  {
+    label: "男生",
+    value: 1
+  },
+  {
+    label: "女生",
+    value: 2
+  },
+  {
+    label: "保密",
+    value: 0
+  }
+];

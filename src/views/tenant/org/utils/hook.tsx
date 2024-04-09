@@ -1,6 +1,5 @@
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import { h, onMounted, reactive, ref } from "vue";
-import { enabledOptions, usePublicHooks } from "../../hooks";
 import type { PaginationProps } from "@pureadmin/table";
 import { ElMessageBox } from "element-plus";
 import type { FormItemProps } from "./types";
@@ -10,6 +9,7 @@ import editForm from "../form.vue";
 import configForm from "../config.vue";
 import { message } from "@/utils/message";
 import * as tenantOrgApi from "@/api/tenant/org";
+import { enabledOptions, usePublicHooks } from "@/utils/constants";
 
 export function useOrg() {
   const switchLoadMap = ref({});

@@ -4,15 +4,15 @@ import { FormProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import Segmented from "@/components/ReSegmented";
 import { formRules } from "./utils/rule";
-import {
-  MenuEnableOptions,
-  keepAliveOptions,
-  menuTypeOptions,
-  showLinkOptions,
-  showParentOptions
-} from "./utils/enums";
 import { listTree } from "@/api/tenant/permission";
 import { IconSelect } from "@/components/ReIcon";
+import {
+  enabledOptions,
+  menuKeepAliveOptions,
+  menuShowLinkOptions,
+  menuShowParentOptions,
+  menuTypeOptions
+} from "@/utils/constants";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
@@ -203,7 +203,7 @@ defineExpose({ getRef });
         <el-form-item label="缓存页面">
           <Segmented
             :modelValue="newFormInline.keepAlive"
-            :options="keepAliveOptions"
+            :options="menuKeepAliveOptions"
             @change="
               ({ option: { value } }) => {
                 newFormInline.keepAlive = value;
@@ -221,7 +221,7 @@ defineExpose({ getRef });
         <el-form-item label="菜单">
           <Segmented
             :modelValue="newFormInline.showLink"
-            :options="showLinkOptions"
+            :options="menuShowLinkOptions"
             @change="
               ({ option: { value } }) => {
                 newFormInline.showLink = value;
@@ -239,7 +239,7 @@ defineExpose({ getRef });
         <el-form-item label="父级菜单">
           <Segmented
             :modelValue="newFormInline.showParent"
-            :options="showParentOptions"
+            :options="menuShowParentOptions"
             @change="
               ({ option: { value } }) => {
                 newFormInline.showParent = value;
@@ -252,7 +252,7 @@ defineExpose({ getRef });
         <el-form-item label="启用">
           <Segmented
             :modelValue="newFormInline.enabled"
-            :options="MenuEnableOptions"
+            :options="enabledOptions"
             @change="
               ({ option: { value } }) => {
                 newFormInline.enabled = value;

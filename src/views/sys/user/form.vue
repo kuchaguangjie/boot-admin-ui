@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { genderOptions, usePublicHooks } from "../hooks";
 import { FormProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import ReSegmented from "@/components/ReSegmented";
 import { useFormRule } from "./utils/rules";
+import { usePublicHooks, genderOptions } from "@/utils/constants";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({

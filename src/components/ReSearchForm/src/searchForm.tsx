@@ -55,7 +55,7 @@ const props = {
 export default defineComponent({
   name: "SearchForm",
   props,
-  emits: ["search", "reset", "searchForm", "change"],
+  emits: ["search", "reset", "searchForm", "change", "calenderChange"],
   setup(props, { emit, attrs }) {
     const formDate = ref({});
 
@@ -105,10 +105,38 @@ export default defineComponent({
           placeholder={item.options?.placeholder}
           clearable={item.options?.clearable ?? true}
           type={item.options?.dateType ?? "date"}
-          format={item.options?.format ?? "yyyy-MM-dd"}
-          value-format={item.options?.valueFormat ?? "yyyy-MM-dd"}
+          format={item.options?.format ?? "YYYY-MM-dd"}
+          value-format={item.options?.valueFormat ?? "YYYY-MM-dd"}
+          disabled-date={item?.options?.disabledDate ?? undefined}
           style="width: 100%"
         />
+      );
+    };
+    const dateCycle = (item: SearchFormItem) => {
+      if (item.type !== "date-cycle") return;
+      return (
+        <>
+          <el-date-picker
+            v-model={formDate.value[item.options?.prop + "Start"]}
+            placeholder={item.options?.startPlaceholder}
+            clearable={item.options?.startClearable ?? true}
+            type={item.options?.dateType ?? "date"}
+            format={item.options?.format ?? "YYYY-MM-DD"}
+            value-format={item.options?.valueFormat ?? "YYYY-MM-DD"}
+            disabled-date={item?.options?.startDisabledDate ?? undefined}
+            onChange={date => changeStartDateCycle(date, item)}
+          />
+          ~
+          <el-date-picker
+            v-model={formDate.value[item.options?.prop + "End"]}
+            placeholder={item.options?.endPlaceholder}
+            clearable={item.options?.endClearable ?? true}
+            type={item.options?.dateType ?? "date"}
+            format={item.options?.format ?? "YYYY-MM-DD"}
+            value-format={item.options?.valueFormat ?? "YYYY-MM-DD"}
+            disabledDate={date => endDateCycleDisabled(date, item)}
+          ></el-date-picker>
+        </>
       );
     };
     /**
@@ -128,6 +156,27 @@ export default defineComponent({
       /* eslint-disable @typescript-eslint/no-dynamic-delete */
       return obj;
     }
+    /**
+     * date-cycle 开始时间的变更
+     */
+    function changeStartDateCycle(value, item) {
+      formDate.value[item.options?.prop + "End"] = "";
+    }
+    /**
+     * date-cycle 结束时间禁止事件
+     *
+     * @param value 当前时间
+     * @param item 当前formItem
+     */
+    function endDateCycleDisabled(value, item): boolean {
+      const startDate = formDate.value[item.options?.prop + "Start"];
+      if (startDate) {
+        // 结束时间小于开始时间
+        return value.getTime() < new Date(startDate).getTime();
+      }
+      return false;
+    }
+
     /**
      * 表单项值改变
      *@param item 表单项
@@ -193,6 +242,7 @@ export default defineComponent({
                 {inputItem(item)}
                 {selectItem(item)}
                 {dateItem(item)}
+                {dateCycle(item)}
               </el-form-item>
             );
           })}

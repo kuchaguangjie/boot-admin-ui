@@ -2,9 +2,7 @@ import { h, onMounted, reactive, ref } from "vue";
 import editForm from "../form.vue";
 import permissionTreeForm from "../tree.vue";
 import type { OptionsType } from "@/components/ReSegmented";
-import { RoleEnableOptions } from "./enums";
 import type { PaginationProps } from "@pureadmin/table";
-import { usePublicHooks } from "../../hooks";
 import type { FormItemProps } from "./types";
 import { addDialog } from "@/components/ReDialog";
 import { pageRole } from "@/api/sys/role";
@@ -14,6 +12,7 @@ import { isFunction } from "@pureadmin/utils";
 import { ElMessageBox } from "element-plus";
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import { addDrawer, closeDrawer } from "@/components/ReDrawer";
+import { enabledOptions, usePublicHooks } from "@/utils/constants";
 
 export function useRole() {
   const formRef = ref();
@@ -75,7 +74,7 @@ export function useRole() {
       }
     ],
     dataSource: {
-      enabledOptions: RoleEnableOptions
+      enabledOptions: enabledOptions
     }
   });
   const pagination = reactive<PaginationProps>({

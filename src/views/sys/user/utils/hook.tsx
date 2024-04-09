@@ -9,7 +9,6 @@ import { addDrawer } from "@/components/ReDrawer";
 import { deviceDetection, isAllEmpty } from "@pureadmin/utils";
 import { message } from "@/utils/message";
 import { listRole } from "@/api/sys/role";
-import { enabledOptions, genderMap, usePublicHooks } from "../../hooks";
 import {
   ElForm,
   ElFormItem,
@@ -20,6 +19,7 @@ import {
 import { addDialog } from "@/components/ReDialog";
 import { zxcvbn } from "@zxcvbn-ts/core";
 import { watch } from "vue";
+import { enabledOptions, genderMap, usePublicHooks } from "@/utils/constants";
 
 export function useUser() {
   const formRef = ref();

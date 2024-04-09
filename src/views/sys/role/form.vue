@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import { FormProps } from "./utils/types";
 import ReSegmented from "@/components/ReSegmented";
-import { RoleEnableOptions } from "./utils/enums";
 import { setFormRule } from "./utils/rules";
+import { enabledOptions } from "@/utils/constants";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
@@ -51,7 +51,7 @@ defineExpose({ getRef });
     <el-form-item label="角色状态" prop="enabled">
       <ReSegmented
         v-model="newFormInline.enabled"
-        :options="RoleEnableOptions"
+        :options="enabledOptions"
         @change="
           ({ option: { value } }) => {
             newFormInline.enabled = value;

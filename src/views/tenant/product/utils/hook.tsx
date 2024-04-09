@@ -1,6 +1,5 @@
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import { h, onMounted, reactive, ref } from "vue";
-import { enabledMap, enabledOptions } from "../..//hooks";
 import type { PaginationProps } from "@pureadmin/table";
 import * as productApi from "@/api/tenant/product";
 import type { FormItemProps } from "./types";
@@ -12,6 +11,7 @@ import router from "@/router";
 import { addDrawer, closeDrawer } from "@/components/ReDrawer";
 import { isFunction } from "@pureadmin/utils";
 import permissionTreeForm from "../permissionTree.vue";
+import { enabledMap, enabledOptions } from "@/utils/constants";
 
 export function useProduct() {
   const formRef = ref();

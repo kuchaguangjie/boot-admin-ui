@@ -13,6 +13,16 @@ export function existsBySysCode(sysCode: string, id?: string) {
     id: id
   });
 }
+
+/**
+ * 列表查询-商户
+ *
+ * @param query
+ * @returns
+ */
+export function tenantList(query?: any) {
+  return http.get<any, any>("/tenant/org/list", query);
+}
 /**
  * 分页查询-商户
  *

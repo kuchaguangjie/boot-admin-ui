@@ -3,11 +3,11 @@ import { type Ref, h, onMounted, reactive, ref } from "vue";
 import * as permissionApi from "@/api/tenant/permission";
 import type { FormItemProps, TableColumnsProps } from "./types";
 import { isAllEmpty } from "@pureadmin/utils";
-import { getMenuType, menuTypeOptionMap } from "../..//hooks";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import editForm from "../form.vue";
 import { addDrawer } from "@/components/ReDrawer";
 import { message } from "@/utils/message";
+import { getMenuType, menuTypeOptionMap } from "@/utils/constants";
 
 export function usePermission(tableRef: Ref) {
   const formRef = ref();

@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { FormProps } from "./utils/types";
 import { setFormRule } from "./utils/rules";
 import ReSegmented from "@/components/ReSegmented";
-import { enabledOptions } from "../hooks";
+import { enabledOptions } from "@/utils/constants";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
