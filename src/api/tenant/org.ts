@@ -62,11 +62,41 @@ export function resetPwdTenant(id: string) {
 }
 
 /**
+ *  获取商户的基础配置
+ *
+ * @param id
+ * @returns
+ */
+export function getBasicConfigTenant(id: string) {
+  return http.get<any, any>(`/tenant/org/basic/config`, { id: id });
+}
+
+/**
  * 更新商户的相关配置
  *
  * @param data .
  * @returns .
  */
-export function updateConfigTenant(data: any) {
-  return http.put<any, any, string>(`/tenant/org/config`, {}, data);
+export function updateBasicConfigTenant(data: any) {
+  return http.put<any, any, string>(`/tenant/org/basic/config`, {}, data);
+}
+
+/**
+ *
+ * 获取商户的oss配置
+ *
+ * @param sysCode
+ */
+export function getOssConfig(sysCode: string) {
+  return http.get<any, any>("/sys/oss/config", { sysCode: sysCode });
+}
+
+/**
+ *  更新商户的oss配置
+ *
+ * @param data .
+ * @returns .
+ */
+export function updateOssConfig(data: any) {
+  return http.put<any, any, string>(`/sys/oss/config`, {}, data);
 }

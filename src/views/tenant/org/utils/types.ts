@@ -17,4 +17,18 @@ interface FormProps {
   formInline: FormItemProps;
 }
 
-export type { FormItemProps, FormProps };
+interface BasicConfigFormIemProps {
+  id?: string;
+  usedEndTime?: string;
+}
+
+interface BasicConfigFormProps {
+  formInline: BasicConfigFormIemProps;
+}
+
+export type {
+  FormItemProps,
+  FormProps,
+  BasicConfigFormIemProps,
+  BasicConfigFormProps
+};

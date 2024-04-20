@@ -14,7 +14,7 @@ export function useNotice(dropdownRef: Ref) {
     page: 0,
     pageSize: 10,
     total: 0,
-    next: true
+    next: false
   });
   const unReadCount = ref(0);
   async function getUnReadCount() {
@@ -35,11 +35,13 @@ export function useNotice(dropdownRef: Ref) {
         loading.value = false;
       });
     if (success) {
-      if (data.records.length === 0) {
-        pagination.next = false;
+      if (data?.records?.length > 0) {
+        pagination.next = true;
       }
-      notices.value = notices.value.concat(data.records);
-      pagination.total = data.total;
+      if (data?.records) {
+        notices.value = notices.value.concat(data.records);
+      }
+      pagination.total = data?.total;
     }
   }
 

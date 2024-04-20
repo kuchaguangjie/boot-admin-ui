@@ -171,7 +171,8 @@ defineOptions({
 <style lang="scss">
 .pure-drawer {
   .el-drawer__header {
-    padding-bottom: var(--el-drawer-padding-primary);
+    padding: var(--el-drawer-padding-primary);
+    margin-bottom: 0;
     border-bottom: 1px solid #e8e8e8;
   }
 

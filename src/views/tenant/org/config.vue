@@ -1,55 +1,74 @@
 <script setup lang="ts">
+import BasicConfig from "./basicConfig.vue";
+import OSSConfig from "./ossConfig.vue";
+import SmsConfig from "./smsConfig.vue";
 import { ref } from "vue";
-import { FormProps } from "./utils/types";
-import ReCol from "@/components/ReCol";
-import { useFormRule } from "./utils/rules";
 
-const props = withDefaults(defineProps<FormProps>(), {
-  formInline: () => ({
-    id: undefined,
-    name: "",
-    sysCode: "",
-    linkMan: "",
-    linkTel: "",
-    linkEmail: "",
-    address: "",
-    productId: "",
-    usedEndTime: "",
-    enabled: true
-  })
+const basicConfigRef = ref();
+const ossConfigRef = ref();
+const tabActive = ref("basic");
+const tabs = ref([
+  { label: "基础配置", name: "basic" },
+  { label: "OSS配置", name: "oss" },
+  { label: "短信配置", name: "sms" },
+  { label: "邮件配置", name: "email" }
+]);
+
+const props = defineProps({
+  id: {
+    type: String,
+    default: ""
+  },
+  sysCode: {
+    type: String,
+    default: ""
+  }
 });
-const ruleFormRef = ref();
-const newFormInline = ref(props.formInline);
 
 function getRef() {
-  return ruleFormRef.value;
+  if (tabActive.value === "basic") {
+    return basicConfigRef.value[0].getRef();
+  } else if (tabActive.value === "oss") {
+    return ossConfigRef.value[0].getRef();
+  }
 }
 
-defineExpose({ getRef });
+function getValue() {
+  if (tabActive.value === "basic") {
+    return basicConfigRef.value[0].getValue();
+  } else if (tabActive.value === "oss") {
+    return ossConfigRef.value[0].getValue();
+  }
+}
+
+function getActiveTab() {
+  return tabs.value.find(tab => tab.name === tabActive.value);
+}
+
+defineExpose({ getRef, getValue, getActiveTab });
 </script>
 
 <template>
-  <el-form
-    ref="ruleFormRef"
-    :model="newFormInline"
-    label-width="150px"
-    :rules="useFormRule(newFormInline)"
-    position="right"
-  >
-    <el-row :gutter="30">
-      <re-col :value="16" :xs="24" :sm="24">
-        <el-form-item label="使用截止时间" prop="usedEndTime">
-          <el-date-picker
-            v-model="newFormInline.usedEndTime"
-            type="date"
-            value-format="YYYY-MM-DD"
-            format="YYYY-MM-DD"
-            placeholder="请选择使用截止时间"
-            style="width: 100%"
-            :disabled-date="time => time.getTime() < Date.now()"
-          />
-        </el-form-item>
-      </re-col>
-    </el-row>
-  </el-form>
+  <el-tabs v-model="tabActive">
+    <el-tab-pane
+      v-for="tab in tabs"
+      :key="tab.name"
+      :label="tab.label"
+      :name="tab.name"
+    >
+      <component
+        :is="BasicConfig"
+        v-if="tab.name === 'basic'"
+        :id="props.id"
+        ref="basicConfigRef"
+      />
+      <component
+        :is="OSSConfig"
+        v-if="tab.name === 'oss'"
+        ref="ossConfigRef"
+        :sysCode="props.sysCode"
+      />
+      <component :is="SmsConfig" v-if="tab.name === 'sms'" ref="smsConfigRef" />
+    </el-tab-pane>
+  </el-tabs>
 </template>

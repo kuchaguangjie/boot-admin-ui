@@ -68,3 +68,18 @@ export function useFormRule(data: any) {
   formData.value = data;
   return formRules;
 }
+
+export const ossFormRules = reactive(<FormRules>{
+  ossType: [{ required: true, message: "存储类型为必填项", trigger: "change" }],
+  ossName: [{ required: true, message: "OSS名称为必填项", trigger: "blur" }],
+  endpoint: [{ required: true, message: "endpoint为必填项", trigger: "blur" }],
+  accessKey: [
+    { required: true, message: "AccessKey为必填项", trigger: "blur" }
+  ],
+  secretKey: [
+    { required: true, message: "SecretKey为必填项", trigger: "blur" }
+  ],
+  bucketName: [
+    { required: true, message: "BucketName为必填项", trigger: "blur" }
+  ]
+});

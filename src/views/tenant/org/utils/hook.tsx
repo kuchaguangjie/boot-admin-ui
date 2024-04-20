@@ -216,20 +216,8 @@ export function useOrg() {
       title: `更新【${row.name}】商户的配置`,
       width: "35%",
       props: {
-        formInline: {
-          id: row?.id ?? undefined,
-          name: row?.name ?? "",
-          sysCode: row?.sysCode ?? "",
-          linkMan: row?.linkMan ?? "",
-          linkTel: row?.linkTel ?? "",
-          linkEmail: row?.linkEmail ?? "",
-          address: row?.address ?? "",
-          productId: row?.product?.id ?? "",
-          product: row?.product ?? {},
-          usedEndTime: row?.usedEndTime ?? "",
-          memo: row?.memo ?? "",
-          enabled: row?.enabled ?? true
-        }
+        id: row?.id ?? undefined,
+        sysCode: row?.sysCode ?? undefined
       },
       fullscreen: deviceDetection(),
       fullscreenIcon: true,
@@ -253,7 +241,7 @@ export function useOrg() {
           type: "primary",
           bg: true,
           confirm: true,
-          tips: "是否更新当前产品的权限",
+          tips: `是否更新当前租户的相关配置`,
           btnClick: ({ drawer: { options, index } }) => {
             const done = () => closeDrawer(options, index, { command: "sure" });
             if (options?.beforeSure && isFunction(options?.beforeSure)) {
@@ -265,26 +253,38 @@ export function useOrg() {
         }
       ],
       contentRenderer: () => h(configForm, { ref: configFormRef }),
-      beforeSure: (done, { options }) => {
+      beforeSure: () => {
         const FormRef = configFormRef.value.getRef();
-        const curData = options.props.formInline as FormItemProps;
+        console.log(FormRef);
+        // const curData = options.props.formInline as FormItemProps;
         function chores() {
-          message("保存成功", { type: "success" });
-          done(); // 关闭弹框
+          message(`更新成功`, { type: "success" });
+          // done(); // 关闭弹框
           onSearch(); // 刷新表格数据
         }
-        FormRef.validate(async valid => {
-          if (valid) {
-            const data = {
-              id: curData.id,
-              usedEndTime: curData.usedEndTime
-            };
-            const { success } = await tenantOrgApi.updateConfigTenant(data);
-            if (success) {
-              chores();
+        const activeTab = configFormRef.value.getActiveTab();
+        if (activeTab.name === "basic") {
+          FormRef.validate(async valid => {
+            if (valid) {
+              const value = configFormRef.value.getValue();
+              const { success } =
+                await tenantOrgApi.updateBasicConfigTenant(value);
+              if (success) {
+                chores();
+              }
             }
-          }
-        });
+          });
+        } else if (activeTab.name === "oss") {
+          FormRef.validate(async valid => {
+            if (valid) {
+              const value = configFormRef.value.getValue();
+              const { success } = await tenantOrgApi.updateOssConfig(value);
+              if (success) {
+                chores();
+              }
+            }
+          });
+        }
       }
     });
   }
