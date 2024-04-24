@@ -11,6 +11,10 @@ import { isFunction } from "@pureadmin/utils";
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill";
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill";
 
+defineOptions({
+  name: "ReDialog"
+});
+
 const fullscreen = ref(false);
 
 const footerButtons = computed(() => {
@@ -37,6 +41,7 @@ const footerButtons = computed(() => {
             type: "primary",
             text: true,
             bg: true,
+            popconfirm: options?.popconfirm,
             btnClick: ({ dialog: { options, index } }) => {
               const done = () =>
                 closeDialog(options, index, { command: "sure" });

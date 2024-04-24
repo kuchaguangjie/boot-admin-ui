@@ -29,11 +29,17 @@ const props = {
     type: Boolean,
     default: false
   },
-  /** 控件尺寸	 */
+  /** 控件尺寸 */
   size: {
     type: String as PropType<"small" | "default" | "large">
   },
+  /** 是否全局禁用，默认 `false` */
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  /** 当内容发生变化时，设置 `resize` 可使其自适应容器位置 */
+  resize: {
     type: Boolean,
     default: false
   }
@@ -62,8 +68,7 @@ export default defineComponent({
     }
 
     function handleChange({ option, index }, event: Event) {
-      if (props.disabled) return;
-      if (option.disabled) return;
+      if (props.disabled || option.disabled) return;
       event.preventDefault();
       curIndex.value = index;
       emit("change", { index, option });
@@ -107,7 +112,7 @@ export default defineComponent({
       });
     }
 
-    props.block && handleResizeInit();
+    (props.block || props.resize) && handleResizeInit();
 
     watch(
       () => curIndex.value,
@@ -130,15 +135,16 @@ export default defineComponent({
             ref={`labelRef${index}`}
             class={[
               "pure-segmented-item",
-              (option?.disabled || props.disabled) &&
+              (props.disabled || option?.disabled) &&
                 "pure-segmented-item-disabled"
             ]}
             style={{
               background:
                 curMouseActive.value === index ? segmentedItembg.value : "",
-              color:
-                !option.disabled &&
-                (curIndex.value === index || curMouseActive.value === index)
+              color: props.disabled
+                ? null
+                : !option.disabled &&
+                    (curIndex.value === index || curMouseActive.value === index)
                   ? isDark.value
                     ? "rgba(255, 255, 255, 0.85)"
                     : "rgba(0,0,0,.88)"

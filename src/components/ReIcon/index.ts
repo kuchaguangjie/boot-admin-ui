@@ -7,7 +7,7 @@ import iconSelect from "./src/Select.vue";
 const IconifyIconOffline = iconifyIconOffline;
 /** 在线图标组件 */
 const IconifyIconOnline = iconifyIconOnline;
-/** iconfont组件 */
+/** `iconfont`组件 */
 const FontIcon = fontIcon;
 /** `IconSelect`图标选择器组件 */
 const IconSelect = iconSelect;
