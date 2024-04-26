@@ -111,6 +111,8 @@ export const useAuthStore = defineStore({
         useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
         resetRouter();
         router.push("/login");
+        //刷新
+        window.location.reload();
       }
     }
   }
