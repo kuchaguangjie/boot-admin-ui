@@ -36,3 +36,13 @@ export function saveOrg(data: any) {
 export function updateOrg(data: any) {
   return http.put<any, any, string>(`/bas/org`, {}, data);
 }
+
+/**
+ * 删除机构
+ *
+ * @param id .
+ * @returns
+ */
+export function deleteOrg(id: string) {
+  return http.del<any, any, string>(`/bas/org`, { id: id });
+}

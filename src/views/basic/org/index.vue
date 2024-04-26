@@ -3,7 +3,6 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useOrg } from "./utils/hook";
 import { SearchForm } from "@/components/ReSearchForm";
 import { ref } from "vue";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
 const tableRef = ref();
 
@@ -14,7 +13,8 @@ const {
   handleSetSearchForm,
   onSearch,
   handleGetChild,
-  openDrawer
+  openDrawer,
+  deleteOrg
 } = useOrg(tableRef);
 
 defineOptions({
@@ -58,28 +58,45 @@ defineOptions({
           }"
         >
           <template #operation="{ row }">
-            <el-button
+            <el-link
               v-auth="permission.edit"
               class="reset-margin"
-              link
               type="primary"
               :size="size"
-              :icon="useRenderIcon('ri:edit-fill')"
+              :underline="false"
               @click="openDrawer('修改', row)"
             >
               修改
-            </el-button>
-            <el-button
+            </el-link>
+            <el-link
               v-auth="permission.add"
               class="reset-margin"
-              link
               type="primary"
               :size="size"
-              :icon="useRenderIcon('ri:add-circle-fill')"
+              :underline="false"
               @click="openDrawer('新增', { parentId: row.id })"
             >
+              <el-divider direction="vertical" />
               新增
-            </el-button>
+            </el-link>
+            <el-popconfirm
+              v-auth="permission.delete"
+              title="确认删除吗？"
+              @confirm="deleteOrg(row.id)"
+            >
+              <template #reference>
+                <el-link
+                  class="reset-margin"
+                  :disabled="row.system"
+                  type="danger"
+                  :size="size"
+                  :underline="false"
+                >
+                  <el-divider direction="vertical" />
+                  删除
+                </el-link>
+              </template>
+            </el-popconfirm>
           </template>
         </PureTable>
       </template>

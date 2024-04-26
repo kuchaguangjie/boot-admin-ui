@@ -246,6 +246,18 @@ export function useOrg(tableRef: Ref) {
       handleGetChild(row, treeNode, resolve);
     }
   }
+  async function deleteOrg(id: string) {
+    tableData.loading = true;
+    const { success } = await orgApi.deleteOrg(id).finally(() => {
+      tableData.loading = false;
+    });
+    if (success) {
+      message(`删除成功`, {
+        type: "success"
+      });
+      onSearch();
+    }
+  }
 
   onMounted(() => {
     onSearch();
@@ -257,6 +269,7 @@ export function useOrg(tableRef: Ref) {
     handleSetSearchForm,
     onSearch,
     handleGetChild,
-    openDrawer
+    openDrawer,
+    deleteOrg
   };
 }
