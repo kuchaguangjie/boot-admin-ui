@@ -12,7 +12,13 @@ import editForm from "../form.vue";
 import { message } from "@/utils/message";
 import { zxcvbn } from "@zxcvbn-ts/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { ElForm, ElFormItem, ElInput, ElProgress } from "element-plus";
+import {
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElMessageBox,
+  ElProgress
+} from "element-plus";
 import { watch } from "vue";
 
 export function useUser() {
@@ -157,7 +163,7 @@ export function useUser() {
             inactive-text="已停用"
             inline-prompt
             style={switchStyle.value}
-            onChange={() => onChange(scope as any)}
+            onChange={() => onChangeEnabled(scope as any)}
             disabled={scope.row.system}
           />
         )
@@ -251,7 +257,7 @@ export function useUser() {
         const curData = options.props.formInline as FormItemProps;
         console.log(curData);
         function chores() {
-          message("保存成功");
+          message("保存成功", { type: "success" });
           done(); // 关闭弹框
           onSearch(); // 刷新表格数据
         }
@@ -302,7 +308,11 @@ export function useUser() {
           label: "确认",
           type: "primary",
           bg: true,
-          popconfirm: true,
+          popconfirm: {
+            title: "是否重置用户密码?",
+            icon: "el-icon-warning",
+            iconColor: "var(--el-color-warning)"
+          },
           tips: `重置 ${row.username} 用户的密码`,
           btnClick: ({ dialog: { options, index } }) => {
             const done = () => closeDialog(options, index, { command: "sure" });
@@ -410,9 +420,50 @@ export function useUser() {
     onSearch();
   }
 
-  // function onChange({ row, index }) {
-  // }
-  function onChange() {}
+  function onChangeEnabled({ row, index }) {
+    ElMessageBox.confirm(
+      `确认要<strong>${
+        row.enabled ? "启用" : "停用"
+      }</strong><strong style='color:var(--el-color-primary)'>${row.username}</strong>账号吗?`,
+      "系统提示",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        dangerouslyUseHTMLString: true,
+        draggable: true
+      }
+    )
+      .then(async () => {
+        switchLoadMap.value[index] = Object.assign(
+          {},
+          switchLoadMap.value[index],
+          {
+            loading: true
+          }
+        );
+        row.enabled = !row.enabled ? false : true;
+        row.orgId = row.org.id;
+        row.roleIds = row.roles.map(item => item.id);
+        const { success } = await userApi.updateUser(row);
+        if (success) {
+          switchLoadMap.value[index] = Object.assign(
+            {},
+            switchLoadMap.value[index],
+            {
+              loading: false
+            }
+          );
+          message(`已${row.enabled ? "启用" : "停用"}${row.username}账号`, {
+            type: "success"
+          });
+          onSearch();
+        }
+      })
+      .catch(() => {
+        row.enabled = row.enabled ? false : true;
+      });
+  }
 
   async function onSearch() {
     tableData.loading = true;
@@ -447,6 +498,16 @@ export function useUser() {
       roleData.value = data;
     }
   }
+  async function deleteUser(id) {
+    tableData.loading = true;
+    const { success } = await userApi
+      .deleteUser(id)
+      .finally(() => (tableData.loading = false));
+    if (success) {
+      message("删除成功", { type: "success" });
+      onSearch();
+    }
+  }
 
   function handleSetSearchForm(data?: any) {
     searchData.data = data;
@@ -479,6 +540,7 @@ export function useUser() {
     handleSetSearchForm,
     handleChangeCurrentPage,
     handleChangePageSize,
-    handleRestPwd
+    handleRestPwd,
+    deleteUser
   };
 }

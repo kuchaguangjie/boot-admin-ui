@@ -48,3 +48,13 @@ export function updateUser(data: any) {
 export function resetPassword(data: any) {
   return http.put<any, any, string>(`/bas/user/restPassword`, {}, data);
 }
+
+/**
+ *  删除用户
+ *
+ * @param id
+ * @returns
+ */
+export function deleteUser(id: string) {
+  return http.del<any, any, string>(`/bas/user`, { id });
+}

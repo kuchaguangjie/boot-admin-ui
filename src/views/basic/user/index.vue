@@ -19,7 +19,8 @@ const {
   openDrawer,
   handleChangeCurrentPage,
   handleChangePageSize,
-  handleRestPwd
+  handleRestPwd,
+  deleteUser
 } = useUser();
 
 const tableRef = ref();
@@ -86,53 +87,62 @@ defineOptions({
           >
             <template #operation="{ row }">
               <div class="flex justify-center items-center">
-                <el-button
+                <el-link
                   v-auth="permission.edit"
                   class="reset-margin"
-                  link
                   type="primary"
                   :size="size"
-                  :icon="useRenderIcon('ri:edit-fill')"
+                  :underline="false"
                   :disabled="row.system"
                   @click="openDrawer('修改', row)"
                 >
                   修改
-                </el-button>
-                <el-popconfirm :title="`是否删除用户: ${row.username}`">
+                </el-link>
+                <el-popconfirm
+                  v-auth="permission.delete"
+                  :title="`是否删除用户: ${row.username}`"
+                  :disabled="row.system"
+                  @confirm="deleteUser(row.id)"
+                >
                   <template #reference>
-                    <el-button
+                    <el-link
                       v-auth="permission.delete"
                       class="reset-margin"
-                      link
-                      type="primary"
+                      type="danger"
                       :size="size"
-                      :icon="useRenderIcon('ri:delete-bin-fill')"
+                      :underline="false"
                       :disabled="row.system"
                     >
+                      <el-divider direction="vertical" />
                       删除
-                    </el-button>
+                    </el-link>
                   </template>
                 </el-popconfirm>
                 <el-dropdown trigger="click">
-                  <el-button
+                  <el-link
                     class="reset-margin"
-                    link
                     type="primary"
                     :size="size"
-                    :icon="useRenderIcon('ep:arrow-down-bold')"
-                    >更多</el-button
+                    :underline="false"
                   >
+                    <el-divider direction="vertical" />
+                    更多
+                    <component
+                      :is="useRenderIcon('ep:arrow-down-bold')"
+                      size="14"
+                    />
+                  </el-link>
                   <template #dropdown>
                     <el-dropdown-item>
-                      <el-button
+                      <el-link
                         v-auth="permission.resetPwd"
-                        link
+                        :underline="false"
                         :size="size"
                         :disabled="row.system"
                         @click="handleRestPwd(row)"
                       >
                         重置密码
-                      </el-button>
+                      </el-link>
                     </el-dropdown-item>
                   </template>
                 </el-dropdown>
