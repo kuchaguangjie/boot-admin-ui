@@ -45,7 +45,7 @@ export function saveRole(data: any) {
  * @returns
  */
 export function updateRole(data: any) {
-  return http.put<any, any, string>("/bas/role", data);
+  return http.put<any, any, string>("/bas/role", {}, data);
 }
 
 /**

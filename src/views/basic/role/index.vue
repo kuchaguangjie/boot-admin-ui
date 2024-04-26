@@ -74,47 +74,47 @@ defineOptions({
           @page-size-change="handleChangePageSize"
         >
           <template #operation="{ row }">
-            <el-button
+            <el-link
               v-auth="permission.edit"
               class="reset-margin"
-              link
               type="primary"
               :size="size"
-              :icon="useRenderIcon('ri:edit-fill')"
+              :underline="false"
               :disabled="row.system"
               @click="openDialog('修改', row)"
             >
               修改
-            </el-button>
-            <el-button
+            </el-link>
+            <el-link
               v-auth="permission.grantPermission"
               class="reset-margin"
-              link
               type="primary"
               :size="size"
-              :icon="useRenderIcon('ep:menu')"
+              :underline="false"
               :disabled="row.system"
               @click="openPermission(row)"
             >
-              权限
-            </el-button>
+              <el-divider direction="vertical" />
+              赋权
+            </el-link>
 
             <el-popconfirm
-              :title="`是否确认删除角色名称为${row.name}的这条数据`"
+              :title="`是否删除角色: 【${row.name}】?`"
+              :disabled="row.system"
               @confirm="handleDeleteRole(row)"
             >
               <template #reference>
-                <el-button
+                <el-link
                   v-auth="permission.delete"
                   class="reset-margin"
-                  link
-                  type="primary"
+                  type="danger"
                   :size="size"
-                  :icon="useRenderIcon('ri:delete-bin-fill')"
                   :disabled="row.system"
+                  :underline="false"
                 >
+                  <el-divider direction="vertical" />
                   删除
-                </el-button>
+                </el-link>
               </template>
             </el-popconfirm>
           </template>

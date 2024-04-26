@@ -52,11 +52,44 @@ function loadRolePermission() {
   });
 }
 
+/**
+ * 全部展开
+ */
+function handleExpandAll() {
+  Object.values(treeRef.value.store.nodesMap).forEach((v: any) => v.expand());
+}
+
+/**
+ * 全部折叠
+ */
+function handleCollapseAll() {
+  // 获取
+  Object.values(treeRef.value.store.nodesMap).forEach((v: any) => v.collapse());
+}
+
+/**
+ * 全部取消
+ */
+function handleUnSelectAll() {
+  treeRef.value.setCheckedNodes([]);
+}
+
+/**
+ * 全部选中
+ */
+function handleSelectAll() {
+  treeRef.value.setCheckedNodes(permissionTree.value);
+}
+
 onMounted(() => {
   loadPermissionTree();
 });
-defineOptions({
-  name: "PermissionTree"
+
+defineExpose({
+  handleExpandAll,
+  handleCollapseAll,
+  handleUnSelectAll,
+  handleSelectAll
 });
 </script>
 
@@ -65,7 +98,7 @@ defineOptions({
     <h5 style="margin-bottom: 20px">
       【{{ newFormInline?.role?.name }}】所拥有的权限：
     </h5>
-    <el-tree-v2
+    <el-tree
       ref="treeRef"
       :data="permissionTree"
       :props="dataProps"
@@ -78,6 +111,6 @@ defineOptions({
       <template #default="{ data }">
         <span>{{ data.title }}</span>
       </template>
-    </el-tree-v2>
+    </el-tree>
   </div>
 </template>

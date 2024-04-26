@@ -1,6 +1,8 @@
 import { h, onMounted, reactive, ref } from "vue";
 import editForm from "../form.vue";
 import permissionTreeForm from "../tree.vue";
+import TreeFooter from "../treeFooter.vue";
+
 import type { OptionsType } from "@/components/ReSegmented";
 import type { PaginationProps } from "@pureadmin/table";
 import type { FormItemProps } from "./types";
@@ -266,11 +268,9 @@ export function useRole() {
       width: "45%",
       fullscreenIcon: true,
       closeOnClickModal: false,
-      footerButtons: [
-        {
-          label: "取消",
-          bg: true,
-          btnClick: ({ drawer: { options, index } }) => {
+      footerRenderer: ({ options, index }) =>
+        h(TreeFooter, {
+          onClose() {
             const done = () =>
               closeDrawer(options, index, { command: "cancel" });
             if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
@@ -278,24 +278,28 @@ export function useRole() {
             } else {
               done();
             }
-          }
-        },
-        {
-          label: "确认",
-          type: "primary",
-          bg: true,
-          confirm: true,
-          tips: "是否更新当前角色的权限信息",
-          btnClick: ({ drawer: { options, index } }) => {
+          },
+          onConfirm() {
             const done = () => closeDrawer(options, index, { command: "sure" });
             if (options?.beforeSure && isFunction(options?.beforeSure)) {
               options.beforeSure(done, { options, index });
             } else {
               done();
             }
+          },
+          onSelect() {
+            treeRef.value.handleSelectAll();
+          },
+          onUnSelect() {
+            treeRef.value.handleUnSelectAll();
+          },
+          onCollapse() {
+            treeRef.value.handleCollapseAll();
+          },
+          onExpand() {
+            treeRef.value.handleExpandAll();
           }
-        }
-      ],
+        }),
       contentRenderer: () => h(permissionTreeForm, { ref: treeRef }),
       beforeSure: async (done, { options }) => {
         const curData = options.props.formInline;
