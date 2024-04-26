@@ -106,7 +106,7 @@ defineOptions({
             >
               授权
             </el-button>
-            <el-popconfirm :title="`是否删除产品: ${row.username}`">
+            <el-popconfirm :title="`是否删除产品:【${row.name}】`">
               <template #reference>
                 <el-button
                   v-auth="permission.delete"
