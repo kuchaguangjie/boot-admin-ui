@@ -23,6 +23,7 @@ defineOptions({
 });
 const router = useRouter();
 const loading = ref(false);
+const disabled = ref(false);
 const ruleFormRef = ref<FormInstance>();
 
 const { initStorage } = useLayout();
@@ -51,15 +52,18 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         })
         .then(res => {
           if (res.success) {
-            initRouter().then(() => {
-              router.push(getTopMenu(true).path);
-              message("登录成功", { type: "success" });
-            });
+            return initRouter()
+              .then(() => {
+                disabled.value = true;
+                router.push(getTopMenu(true).path);
+                message("登录成功", { type: "success" });
+              })
+              .finally(() => (disabled.value = false));
           }
           loading.value = false;
-        });
+        })
+        .finally(() => (loading.value = false));
     } else {
-      loading.value = false;
       return fields;
     }
   });
@@ -161,6 +165,7 @@ onBeforeUnmount(() => {
                 size="default"
                 type="primary"
                 :loading="loading"
+                :disabled="disabled"
                 @click="onLogin(ruleFormRef)"
               >
                 登录
