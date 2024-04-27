@@ -99,7 +99,6 @@ defineOptions({
                   修改
                 </el-link>
                 <el-popconfirm
-                  v-auth="permission.delete"
                   :title="`是否删除用户: ${row.username}`"
                   :disabled="row.system"
                   @confirm="deleteUser(row.id)"

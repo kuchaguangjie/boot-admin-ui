@@ -80,7 +80,6 @@ defineOptions({
               新增
             </el-link>
             <el-popconfirm
-              v-auth="permission.delete"
               title="确认删除吗？"
               :disabled="row.system"
               @confirm="deleteOrg(row.id)"
