@@ -350,6 +350,22 @@ export function useOrg() {
             loading: true
           }
         );
+        row.enabled = !row.enabled ? false : true;
+        row.productId = row?.product?.id;
+        const { success } = await updateTenantOrg(row);
+        if (success) {
+          switchLoadMap.value[index] = Object.assign(
+            {},
+            switchLoadMap.value[index],
+            {
+              loading: false
+            }
+          );
+          message(`已${row.enabled ? "启用" : "停用"}${row.name}`, {
+            type: "success"
+          });
+          onSearch();
+        }
       })
       .catch(() => {
         row.enabled = row.enabled ? false : true;
