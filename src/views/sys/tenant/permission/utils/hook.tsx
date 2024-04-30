@@ -251,12 +251,16 @@ export function usePermission(tableRef: Ref) {
       //     }
       //   }
       // );
-
-      //重新刷新当前节点的子节点
-      const _tableRef = tableRef.value.getTableRef();
-      const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
-      _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
-      handleGetChild(row, treeNode, resolve);
+      if (data.parentId) {
+        //重新刷新当前节点的子节点
+        const _tableRef = tableRef.value.getTableRef();
+        const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
+        _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        handleGetChild(row, treeNode, resolve);
+      } else {
+        //刷新当前节点
+        onSearch();
+      }
     }
   }
   async function handleDeleteMenu(data: FormItemProps) {

@@ -207,8 +207,8 @@ function initRouter() {
           .refreshUserInfo()
           .then(() => {
             currentRoutes().then(res => {
-              handleAsyncRoutes(cloneDeep(res.data));
-              storageLocal().setItem(key, res.data);
+              handleAsyncRoutes(cloneDeep(res.data) || []);
+              storageLocal().setItem(key, res.data || []);
               resolve(router);
             });
           });
@@ -220,7 +220,7 @@ function initRouter() {
         .refreshUserInfo()
         .then(() => {
           currentRoutes().then(res => {
-            handleAsyncRoutes(cloneDeep(res.data));
+            handleAsyncRoutes(cloneDeep(res.data) || []);
             resolve(router);
           });
         });

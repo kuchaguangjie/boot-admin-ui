@@ -388,7 +388,7 @@ export function useUser() {
     tableData.loading = true;
     const { success } = await userApi.deleteUser(row.id);
     if (success) {
-      message("删除成功");
+      message("删除成功", { type: "success" });
       onSearch();
     }
   }

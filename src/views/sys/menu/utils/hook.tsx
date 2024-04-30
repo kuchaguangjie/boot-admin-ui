@@ -120,7 +120,7 @@ export function useMenu(tableRef: Ref) {
     tableForm.loading = true;
     const params = {
       ...searchForm.searchData,
-      sorts: "created"
+      sorts: "rank"
     };
     listMenus<any, TableColumnsProps[]>(params)
       .then(res => {
@@ -144,7 +144,8 @@ export function useMenu(tableRef: Ref) {
     // load 函数中的将当前行信息保存
     tableMaps.value.set(row.id, { row, treeNode, resolve });
     const { success, data } = await listMenus<any, TableColumnsProps[]>({
-      parentId: row.id
+      parentId: row.id,
+      sorts: "rank"
     });
     if (success) {
       data.forEach(el => {

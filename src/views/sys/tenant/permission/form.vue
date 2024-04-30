@@ -4,7 +4,7 @@ import { FormProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import Segmented from "@/components/ReSegmented";
 import { formRules } from "./utils/rule";
-import { listTree } from "@/api/tenant/permission";
+import { listTree } from "@/api/sys/tenant/permission";
 import { IconSelect } from "@/components/ReIcon";
 import {
   enabledOptions,
