@@ -193,7 +193,8 @@ export function useUser() {
     background: true
   });
 
-  function openDrawer(title = "新增", data?: FormItemProps) {
+  async function openDrawer(title = "新增", data?: FormItemProps) {
+    const res = await userApi.getRoles(data?.id ?? "");
     addDrawer({
       title: `${title}用户`,
       width: "35%",
@@ -203,7 +204,8 @@ export function useUser() {
           org: data?.org ?? undefined,
           orgId: data?.org?.id ?? currentOrg?.value ?? "",
           roles: data?.roles ?? [],
-          roleIds: data?.roles?.map((item: any) => item.id) ?? [],
+          // roleIds: data?.roles?.map((item: any) => item.id) ?? [],
+          roleIds: res?.data ?? [],
           username: data?.username ?? "",
           nickname: data?.nickname ?? "",
           password: "",
@@ -265,13 +267,15 @@ export function useUser() {
           if (valid) {
             const data = convertData(curData);
             if (curData.id) {
-              await userApi.updateUser(data).then(() => {
+              const { success } = await userApi.updateUser(data);
+              if (success) {
                 chores();
-              });
+              }
             } else {
-              await userApi.saveUser(data).then(() => {
+              const { success } = await userApi.saveUser(data);
+              if (success) {
                 chores();
-              });
+              }
             }
           }
         });

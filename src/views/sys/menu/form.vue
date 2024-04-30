@@ -17,7 +17,7 @@ import {
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     menuType: 0,
-    parentId: 0,
+    parentId: undefined,
     title: "",
     routeName: "",
     path: "",

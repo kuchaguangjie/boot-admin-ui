@@ -1,6 +1,5 @@
 import { RSA } from "@/utils/crypto";
 import * as http from "@/api/base";
-import { useAuthStoreHook } from "@/store/modules/auth";
 /**
  * 登录
  *
@@ -40,9 +39,10 @@ export function logout() {
  */
 export const currentRoutes = () => {
   //区分管理端与履约端
-  const tenantId = useAuthStoreHook().getTenantId;
-  if (tenantId) {
-    return http.get<any, any>("/bas/permission/current/routes", { tenantId });
-  }
-  return http.get<any, any>("/sys/permission/current/routes");
+  // const tenantId = useAuthStoreHook().getTenantId;
+  // if (tenantId) {
+  //   return http.get<any, any>("/bas/permission/current/routes", { tenantId });
+  // }
+  // return http.get<any, any>("/sys/permission/current/routes");
+  return http.get<any, any>("/auth/routes", {});
 };

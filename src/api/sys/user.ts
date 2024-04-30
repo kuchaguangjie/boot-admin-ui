@@ -23,6 +23,17 @@ export function existsByUsername(username: string, id?: number) {
     id: id
   });
 }
+
+/**
+ * 获取用户角色
+ *
+ * @param email
+ * @param id
+ * @returns
+ */
+export function getRoles(id: string) {
+  return http.get<any, any>(`/sys/user/roles`, { userId: id });
+}
 /**
  * 保存用户
  *
@@ -50,7 +61,7 @@ export function updateUser(data: any) {
  * @param id
  * @returns
  */
-export function deleteUser(id: number) {
+export function deleteUser(id: string) {
   return http.del<any, any, string>(`/sys/user`, { id: id });
 }
 /**

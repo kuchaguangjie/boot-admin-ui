@@ -8,7 +8,7 @@ import { deviceDetection, isFunction } from "@pureadmin/utils";
 import editForm from "../form.vue";
 import configForm from "../config.vue";
 import { message } from "@/utils/message";
-import * as tenantOrgApi from "@/api/tenant/org";
+import * as tenantOrgApi from "@/api/sys/tenant/org";
 import { enabledOptions, usePublicHooks } from "@/utils/constants";
 
 export function useOrg() {
@@ -85,6 +85,10 @@ export function useOrg() {
       {
         label: "商户识别码",
         prop: "sysCode"
+      },
+      {
+        label: "产品",
+        prop: "product.name"
       },
       {
         label: "状态",
@@ -176,7 +180,7 @@ export function useOrg() {
           type: "primary",
           bg: true,
           confirm: true,
-          tips: "是否更新当前产品的权限",
+          tips: "是否更新当前商户信息",
           btnClick: ({ drawer: { options, index } }) => {
             const done = () => closeDrawer(options, index, { command: "sure" });
             if (options?.beforeSure && isFunction(options?.beforeSure)) {
@@ -199,11 +203,15 @@ export function useOrg() {
         FormRef.validate(async valid => {
           if (valid) {
             if (curData.id) {
-              await updateTenantOrg(curData);
-              chores();
+              const { success } = await updateTenantOrg(curData);
+              if (success) {
+                chores();
+              }
             } else {
-              await addTenantOrg(curData);
-              chores();
+              const { success } = await addTenantOrg(curData);
+              if (success) {
+                chores();
+              }
             }
           }
         });

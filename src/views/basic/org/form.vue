@@ -12,7 +12,7 @@ import { computed } from "vue";
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     id: undefined,
-    parentId: "",
+    parentId: undefined,
     name: "",
     linkMan: "",
     linkTel: "",

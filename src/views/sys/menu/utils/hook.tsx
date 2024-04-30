@@ -1,13 +1,13 @@
 import editForm from "../form.vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { isAllEmpty } from "@pureadmin/utils";
+import { isAllEmpty, isFunction } from "@pureadmin/utils";
 import { type Ref, h, onMounted, reactive, ref } from "vue";
 import { listMenus } from "@/api/sys/permission";
 import type { FormItemProps, TableColumnsProps } from "./types";
 import * as permissionApi from "@/api/sys/permission";
 import { message } from "@/utils/message";
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
-import { addDrawer } from "@/components/ReDrawer";
+import { addDrawer, closeDrawer } from "@/components/ReDrawer";
 import {
   getMenuType,
   menuTypeOptionMap,
@@ -118,7 +118,11 @@ export function useMenu(tableRef: Ref) {
 
   async function onSearch() {
     tableForm.loading = true;
-    listMenus<any, TableColumnsProps[]>(searchForm.searchData)
+    const params = {
+      ...searchForm.searchData,
+      sorts: "created"
+    };
+    listMenus<any, TableColumnsProps[]>(params)
       .then(res => {
         const { success, data } = res;
         if (success) {
@@ -155,7 +159,7 @@ export function useMenu(tableRef: Ref) {
         formInline: {
           id: row?.id ?? undefined,
           menuType: row?.menuType ?? 1,
-          parentId: row?.parentId ?? 0,
+          parentId: row?.parentId ?? undefined,
           title: row?.title ?? "",
           routeName: row?.routeName ?? "",
           path: row?.path ?? "",
@@ -175,6 +179,37 @@ export function useMenu(tableRef: Ref) {
       width: "45%",
       fullscreenIcon: true,
       closeOnClickModal: false,
+      footerButtons: [
+        {
+          label: "取消",
+          bg: true,
+          btnClick: ({ drawer: { options, index } }) => {
+            const done = () =>
+              closeDrawer(options, index, { command: "cancel" });
+            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
+              options.beforeCancel(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        },
+        {
+          label: "确认",
+          type: "primary",
+          bg: true,
+          confirm: true,
+          tips: "确认保存当前数据",
+          btnClick: ({ drawer: { options, index } }) => {
+            const done = () =>
+              closeDrawer(options, index, { command: "confirm" });
+            if (options?.beforeSure && isFunction(options?.beforeSure)) {
+              options.beforeSure(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        }
+      ],
       contentRenderer: () => h(editForm, { ref: formRef }),
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
@@ -240,18 +275,23 @@ export function useMenu(tableRef: Ref) {
   async function handleDeleteMenu(data: FormItemProps) {
     const { success } = await permissionApi.deleteMenu(data.id);
     if (success) {
-      const _tableRef = tableRef.value.getTableRef();
-      const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
-      if (
-        _tableRef.store.states.lazyTreeNodeMap.value[data.parentId]?.length > 1
-      ) {
-        //说明该节点下有多个子节点
-        _tableRef.store.states.lazyTreeNodeMap[data.parentId] = [];
+      if (data.parentId) {
+        const _tableRef = tableRef.value.getTableRef();
+        const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
+        if (
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId]?.length >
+          1
+        ) {
+          //说明该节点下有多个子节点
+          _tableRef.store.states.lazyTreeNodeMap[data.parentId] = [];
+        } else {
+          //说明该节点只有一个节点
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        }
+        handleGetChild(row, treeNode, resolve);
       } else {
-        //说明该节点只有一个节点
-        _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        onSearch();
       }
-      handleGetChild(row, treeNode, resolve);
     }
   }
 

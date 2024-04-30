@@ -17,7 +17,7 @@ import {
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     menuType: 0,
-    parentId: 0,
+    parentId: undefined,
     title: "",
     routeName: "",
     path: "",
@@ -264,4 +264,4 @@ defineExpose({ getRef });
     </el-row>
   </el-form>
 </template>
-@/api/tenant/permission
+@/api/tenant/permission @/api/sys/tenant/permission

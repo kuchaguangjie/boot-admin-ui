@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import ReCol from "@/components/ReCol";
-import * as tenantApi from "@/api/tenant/org";
+import * as tenantApi from "@/api/sys/tenant/org";
 import { ossFormRules } from "./utils/rules";
 
 const props = defineProps({
@@ -132,3 +132,4 @@ defineExpose({
   color: #909399;
 }
 </style>
+@/api/sys/tenant/org

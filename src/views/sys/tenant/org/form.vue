@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { FormProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import { onMounted } from "vue";
-import { listProduct } from "@/api/tenant/product";
+import { listProduct } from "@/api/sys/tenant/product";
 import { computed } from "vue";
 import { useFormRule } from "./utils/rules";
 
@@ -157,4 +157,4 @@ defineExpose({ getRef });
   margin-bottom: 30px;
 }
 </style>
-../../sys/hooks @/api/tenant/product
+../../sys/hooks @/api/tenant/product @/api/sys/tenant/product

@@ -240,7 +240,8 @@ export function useRole() {
     const params = {
       ...searchData.data,
       current: pagination.currentPage,
-      size: pagination.pageSize
+      size: pagination.pageSize,
+      sorts: "created desc"
     };
     const { success, data } = await pageRole(params).finally(() => {
       tableData.loading = false;
@@ -323,10 +324,10 @@ export function useRole() {
   async function updateRole(data: FormItemProps) {
     return roleApi.updateRole(data);
   }
-  async function deleteRole(id: number) {
+  async function deleteRole(id: string) {
     return roleApi.deleteRole(id);
   }
-  async function assignPermission(id: number, permissionIds?: number[]) {
+  async function assignPermission(id: string, permissionIds?: string[]) {
     return roleApi.assignPermission(id, permissionIds);
   }
   onMounted(() => {

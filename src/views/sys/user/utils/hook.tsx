@@ -5,8 +5,8 @@ import type { PaginationProps } from "@pureadmin/table";
 import * as userApi from "@/api/sys/user";
 import { computed, h, onMounted, reactive, ref } from "vue";
 import type { FormItemProps } from "./types";
-import { addDrawer } from "@/components/ReDrawer";
-import { deviceDetection, isAllEmpty } from "@pureadmin/utils";
+import { addDrawer, closeDrawer } from "@/components/ReDrawer";
+import { deviceDetection, isAllEmpty, isFunction } from "@pureadmin/utils";
 import { message } from "@/utils/message";
 import { listRole } from "@/api/sys/role";
 import {
@@ -194,16 +194,17 @@ export function useUser() {
     ];
   });
 
-  function openDrawer(title = "新增", row?: FormItemProps) {
+  async function openDrawer(title = "新增", row?: FormItemProps) {
+    const { data } = await userApi.getRoles(row?.id ?? "");
     addDrawer({
       title: `${title}用户`,
       width: "40%",
       props: {
         formInline: {
           id: row?.id ?? undefined,
-          roleIds: row?.roles?.map(e => e.id) ?? [],
+          // roleIds: row?.roles?.map(e => e.id) ?? [],
+          roleIds: data?.map(e => e.id) ?? [],
           roleList: roleData.value,
-
           username: row?.username ?? "",
           nickname: row?.nickname ?? "",
           phone: row?.phone ?? "",
@@ -214,13 +215,43 @@ export function useUser() {
       fullscreen: deviceDetection(),
       fullscreenIcon: true,
       closeOnClickModal: false,
+      footerButtons: [
+        {
+          label: "取消",
+          bg: true,
+          btnClick: ({ drawer: { options, index } }) => {
+            const done = () =>
+              closeDrawer(options, index, { command: "cancel" });
+            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
+              options.beforeCancel(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        },
+        {
+          label: "确认",
+          type: "primary",
+          bg: true,
+          confirm: true,
+          tips: `是否${title}用户`,
+          btnClick: ({ drawer: { options, index } }) => {
+            const done = () => closeDrawer(options, index, { command: "sure" });
+            if (options?.beforeSure && isFunction(options?.beforeSure)) {
+              options.beforeSure(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        }
+      ],
       contentRenderer: () => h(editForm, { ref: formRef }),
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as FormItemProps;
         console.log(curData);
         function chores() {
-          message("保存成功");
+          message("保存成功", { type: "success" });
           done(); // 关闭弹框
           onSearch(); // 刷新表格数据
         }
@@ -330,6 +361,7 @@ export function useUser() {
     return {
       id: formData.id,
       username: formData.username,
+      password: formData.password,
       nickname: formData.nickname,
       phone: formData.phone,
       email: formData.email,
@@ -410,7 +442,8 @@ export function useUser() {
     const params = {
       ...searchData.data,
       current: pagination.currentPage,
-      size: pagination.pageSize
+      size: pagination.pageSize,
+      sorts: "created desc"
     };
     const { success, data } = await userApi.userPage(params).finally(() => {
       tableData.loading = false;
@@ -422,7 +455,7 @@ export function useUser() {
   }
 
   async function loadRoles() {
-    const { success, data } = await listRole({ sorts: "sort" });
+    const { success, data } = await listRole({ sorts: "created" });
     if (success) {
       roleData.value = data;
     }

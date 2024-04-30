@@ -152,7 +152,7 @@ export function useOrg(tableRef: Ref) {
       props: {
         formInline: {
           id: row?.id ?? "",
-          parentId: row?.parentId ?? "",
+          parentId: row?.parentId ?? undefined,
           name: row?.name ?? "",
           linkMan: row?.linkMan ?? "",
           linkTel: row?.linkTel ?? "",
@@ -212,11 +212,15 @@ export function useOrg(tableRef: Ref) {
         FormRef.validate(async valid => {
           if (valid) {
             if (curData.id) {
-              await updateOrg(curData);
-              chores();
+              const { success } = await updateOrg(curData);
+              if (success) {
+                chores();
+              }
             } else {
-              await addOrg(curData);
-              chores();
+              const { success } = await addOrg(curData);
+              if (success) {
+                chores();
+              }
             }
           }
         });
@@ -235,6 +239,7 @@ export function useOrg(tableRef: Ref) {
         handleGetChild(row, treeNode, resolve);
       }
     }
+    return { success };
   }
   async function updateOrg(data: FormItemProps) {
     const { success } = await orgApi.updateOrg(data);
@@ -245,17 +250,26 @@ export function useOrg(tableRef: Ref) {
       _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
       handleGetChild(row, treeNode, resolve);
     }
+    return { success };
   }
-  async function deleteOrg(id: string) {
+  async function deleteOrg(data: FormItemProps) {
     tableData.loading = true;
-    const { success } = await orgApi.deleteOrg(id).finally(() => {
+    const { success } = await orgApi.deleteOrg(data.id).finally(() => {
       tableData.loading = false;
     });
     if (success) {
       message(`删除成功`, {
         type: "success"
       });
-      onSearch();
+      if (data.parentId) {
+        //重新刷新当前节点的子节点
+        const _tableRef = tableRef.value.getTableRef();
+        const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
+        _tableRef.store.states.lazyTreeNodeMap.value[row.parentId] = [];
+        handleGetChild(row, treeNode, resolve);
+      } else {
+        onSearch();
+      }
     }
   }
 

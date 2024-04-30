@@ -3,7 +3,7 @@ import { enabledOptions, usePublicHooks } from "@/utils/constants";
 import type { PaginationProps } from "@pureadmin/table";
 import { type Ref, h, onMounted, reactive, ref } from "vue";
 import * as noticeApi from "@/api/sys/notice";
-import { tenantList } from "@/api/tenant/org";
+import { tenantList } from "@/api/sys/tenant/org";
 import type { FormItemProps } from "./types";
 import { addDialog } from "@/components/ReDialog";
 import editForm from "../form.vue";

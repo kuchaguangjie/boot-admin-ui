@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { listTree } from "@/api/tenant/permission";
+import { listTree } from "@/api/sys/tenant/permission";
+import { getPermission } from "@/api/sys/tenant/product";
 import { nextTick } from "vue";
 import { onMounted } from "vue";
 
@@ -24,25 +25,40 @@ const dataProps = ref({
 });
 const treeRef = ref();
 const checkStrictly = ref(false);
+const loading = ref(false);
 
 function loadPermissionTree() {
-  listTree(false).then(res => {
-    if (res.success) {
-      permissionTree.value = res.data;
-      loadRolePermission();
-    }
-  });
+  loading.value = true;
+  listTree(false)
+    .then(res => {
+      if (res.success) {
+        permissionTree.value = res.data;
+        loadRolePermission();
+      }
+    })
+    .catch(() => {
+      loading.value = false;
+    });
 }
 function loadRolePermission() {
-  const selectedIds = newFormInline.value.role?.permissionIds ?? [];
-  checkStrictly.value = true; //赋值之前先设置为true
-  nextTick(() => {
-    treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
-    newFormInline.value.selectedIds = selectedIds;
-    setTimeout(function () {
-      checkStrictly.value = false; //赋值完成后设置为false
-    }, 500);
-  });
+  // const selectedIds = newFormInline.value.role?.permissionIds ?? [];
+  getPermission(newFormInline.value.role.id)
+    .then(res => {
+      if (res.success) {
+        const selectedIds = res.data;
+        checkStrictly.value = true; //赋值之前先设置为true
+        nextTick(() => {
+          treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
+          newFormInline.value.selectedIds = selectedIds;
+          setTimeout(function () {
+            checkStrictly.value = false; //赋值完成后设置为false
+          }, 500);
+        });
+      }
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 function handleCheckChange(data: any, checked: boolean) {
   const selectedNodes = treeRef.value.getCheckedNodes(); // 重点
@@ -66,6 +82,7 @@ onMounted(() => {
     </h5>
     <el-tree-v2
       ref="treeRef"
+      v-loading="loading"
       :data="permissionTree"
       :props="dataProps"
       show-checkbox
@@ -80,3 +97,4 @@ onMounted(() => {
     </el-tree-v2>
   </div>
 </template>
+@/api/sys/tenant/permission@/api/sys/tenant/product

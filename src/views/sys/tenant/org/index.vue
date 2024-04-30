@@ -74,37 +74,31 @@ defineOptions({
         >
           <template #operation="{ row }">
             <div class="flex justify-center items-center">
-              <el-button
+              <el-link
                 v-auth="permission.update"
                 class="reset-margin"
-                link
                 type="primary"
-                :size="size"
-                :icon="useRenderIcon('ri:edit-fill')"
+                :underline="false"
                 @click="openDrawer('修改', row)"
               >
-                修改
-              </el-button>
+                修改 <el-divider direction="vertical" />
+              </el-link>
               <!--更多-->
               <el-dropdown trigger="click">
-                <el-button
-                  class="reset-margin"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon('ep:arrow-down-bold')"
-                  >更多</el-button
-                >
+                <el-link class="reset-margin" type="primary" :underline="false"
+                  >更多
+                  <component :is="useRenderIcon('ep:arrow-down-bold')" />
+                </el-link>
                 <template #dropdown>
                   <el-dropdown-item>
-                    <el-button link :size="size" @click="openConfigDrawer(row)">
+                    <el-link :underline="false" @click="openConfigDrawer(row)">
                       其他配置
-                    </el-button>
+                    </el-link>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button link :size="size" @click="handleRestPwd(row)">
+                    <el-link :underline="false" @click="handleRestPwd(row)">
                       重置密码
-                    </el-button>
+                    </el-link>
                   </el-dropdown-item>
                 </template>
               </el-dropdown>

@@ -55,10 +55,19 @@ export function updateRole(data: any) {
  * @param id
  * @returns
  */
-export function deleteRole(id: number) {
+export function deleteRole(id: string) {
   return http.del<any, any, string>(`/sys/role`, { id: id });
 }
 
+/**
+ * 获取权限
+ *
+ * @param id
+ * @returns
+ */
+export function getPermission(id: string) {
+  return http.get<any, any>(`/sys/role/permission`, { roleId: id });
+}
 /**
  * 赋权
  *
@@ -66,7 +75,7 @@ export function deleteRole(id: number) {
  * @param permissionIds
  * @returns
  */
-export function assignPermission(id: number, permissionIds: number[]) {
+export function assignPermission(id: string, permissionIds: string[]) {
   return http.put<any, any, string>(
     `/sys/role/assignPermission`,
     { roleId: id },

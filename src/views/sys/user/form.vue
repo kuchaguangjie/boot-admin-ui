@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { FormProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import ReSegmented from "@/components/ReSegmented";
@@ -14,6 +14,8 @@ const props = withDefaults(defineProps<FormProps>(), {
     deptId: undefined,
     deptList: [],
     username: "",
+    password: "",
+    confirmPassword: "",
     nickname: "",
     phone: "",
     email: "",
@@ -24,6 +26,7 @@ const props = withDefaults(defineProps<FormProps>(), {
 const ruleFormRef = ref();
 const { switchStyle } = usePublicHooks();
 const newFormInline = ref(props.formInline);
+const isUpdate = computed(() => !!props.formInline.id);
 
 function getRef() {
   return ruleFormRef.value;
@@ -56,6 +59,27 @@ defineExpose({ getRef });
             clearable
             placeholder="请输入用户账号"
             :disabled="!!newFormInline.id"
+          />
+        </el-form-item>
+      </re-col>
+      <re-col v-if="!isUpdate" :value="12" :xs="24" :sm="24">
+        <el-form-item label="登录密码" prop="password">
+          <el-input
+            v-model="newFormInline.password"
+            clearable
+            placeholder="请输入登录密码"
+            type="password"
+            show-password
+          />
+        </el-form-item>
+      </re-col>
+      <re-col v-if="!isUpdate" :value="12" :xs="24" :sm="24">
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input
+            v-model="newFormInline.confirmPassword"
+            clearable
+            placeholder="请再次输入登录密码"
+            type="password"
           />
         </el-form-item>
       </re-col>

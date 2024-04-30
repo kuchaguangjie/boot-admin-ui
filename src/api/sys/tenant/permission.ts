@@ -1,4 +1,4 @@
-import * as http from "../base";
+import * as http from "../../base";
 
 /**
  * 查询权限列表
@@ -7,7 +7,7 @@ import * as http from "../base";
  * @returns
  */
 export function loadPermission(query?: any) {
-  return http.get<any, any>("/tenant/permission", query);
+  return http.get<any, any>("/sys/tenant/permission", query);
 }
 /**
  * 树形菜单结构
@@ -16,7 +16,9 @@ export function loadPermission(query?: any) {
  * @returns
  */
 export function listTree(filterButton = true) {
-  return http.get<any, any>("/tenant/permission/menu/tree", { filterButton });
+  return http.get<any, any>("/sys/tenant/permission/menu/tree", {
+    filterButton
+  });
 }
 /**
  * 新增权限
@@ -25,7 +27,7 @@ export function listTree(filterButton = true) {
  * @returns
  */
 export function savePermission(data: any) {
-  return http.post<any, any>("/tenant/permission", data);
+  return http.post<any, any>("/sys/tenant/permission", data);
 }
 
 /**
@@ -35,7 +37,7 @@ export function savePermission(data: any) {
  * @returns
  */
 export function updatePermission(data: any) {
-  return http.put<any, any, string>("/tenant/permission", {}, data);
+  return http.put<any, any, string>("/sys/tenant/permission", {}, data);
 }
 
 /**
@@ -44,6 +46,6 @@ export function updatePermission(data: any) {
  * @param id
  * @returns
  */
-export function deletePermission(id: number) {
-  return http.del<any, any, string>(`/tenant/permission`, { id: id }, null);
+export function deletePermission(id: string) {
+  return http.del<any, any, string>(`/sys/tenant/permission`, { id: id }, null);
 }

@@ -82,7 +82,7 @@ defineOptions({
             <el-popconfirm
               title="确认删除吗？"
               :disabled="row.system"
-              @confirm="deleteOrg(row.id)"
+              @confirm="deleteOrg(row)"
             >
               <template #reference>
                 <el-link

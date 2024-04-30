@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import ReCol from "@/components/ReCol";
-import * as tenantApi from "@/api/tenant/org";
+import * as tenantApi from "@/api/sys/tenant/org";
 import { useFormRule } from "./utils/rules";
 
 const props = defineProps({
@@ -62,3 +62,4 @@ defineExpose({ getRef, getValue });
     </el-row>
   </el-form>
 </template>
+@/api/sys/tenant/org

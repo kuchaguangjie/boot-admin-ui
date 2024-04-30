@@ -28,6 +28,16 @@ export function listRole(query?: any) {
 export function pageRole(query?: any) {
   return http.get<any, any>("/bas/role", query);
 }
+
+/**
+ * 获取角色权限
+ *
+ * @param id
+ * @returns
+ */
+export function getPermission(id: string) {
+  return http.get<any, any>(`/bas/role/permission`, { id });
+}
 /**
  * 新增-角色
  *

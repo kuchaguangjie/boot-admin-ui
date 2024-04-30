@@ -1,5 +1,5 @@
 interface FormItemProps {
-  id?: number;
+  id?: string;
   code?: string;
   name?: string;
   principal?: string;

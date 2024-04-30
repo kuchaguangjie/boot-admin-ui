@@ -1,4 +1,4 @@
-import * as http from "../base";
+import * as http from "../../base";
 
 /**
  * code是否存在
@@ -58,16 +58,23 @@ export function updateProduct(data: any) {
  * @param id
  * @returns
  */
-export function deleteProduct(id: number) {
+export function deleteProduct(id: string) {
   return http.del<any, any, string>("/sys/product", { id: id });
 }
-
+/**
+ * 获取产品权限
+ * @param id .
+ * @returns .
+ */
+export function getPermission(id: string) {
+  return http.get<any, any>(`/sys/product/permission`, { id: id });
+}
 /**
  * 产品-授权
  *
  * @param data
  * @returns
  */
-export function grantProduct(id: number, data: any) {
+export function grantProduct(id: string, data: any) {
   return http.put<any, any, string>(`/sys/product/grant`, { id: id }, data);
 }

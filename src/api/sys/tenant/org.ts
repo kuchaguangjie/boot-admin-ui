@@ -1,4 +1,4 @@
-import * as http from "../base";
+import * as http from "../../base";
 
 /**
  * 商户识别码是否存在
@@ -8,7 +8,7 @@ import * as http from "../base";
  * @returns
  */
 export function existsBySysCode(sysCode: string, id?: string) {
-  return http.get<any, boolean>(`/tenant/org/existsBySysCode`, {
+  return http.get<any, boolean>(`/sys/tenant/org/existsBySysCode`, {
     sysCode: sysCode,
     id: id
   });
@@ -21,7 +21,7 @@ export function existsBySysCode(sysCode: string, id?: string) {
  * @returns
  */
 export function tenantList(query?: any) {
-  return http.get<any, any>("/tenant/org/list", query);
+  return http.get<any, any>("/sys/tenant/org/list", query);
 }
 /**
  * 分页查询-商户
@@ -30,7 +30,7 @@ export function tenantList(query?: any) {
  * @returns
  */
 export function pageTenant(query?: any) {
-  return http.get<any, any>(`/tenant/org`, query);
+  return http.get<any, any>(`/sys/tenant/org`, query);
 }
 /**
  * 保存-商户
@@ -39,7 +39,7 @@ export function pageTenant(query?: any) {
  * @returns
  */
 export function saveTenant(data?: any) {
-  return http.post<any, any>(`/tenant/org`, data);
+  return http.post<any, any>(`/sys/tenant/org`, data);
 }
 
 /**
@@ -49,7 +49,7 @@ export function saveTenant(data?: any) {
  * @returns
  */
 export function updateTenant(data?: any) {
-  return http.put<any, any, string>(`/tenant/org`, {}, data);
+  return http.put<any, any, string>(`/sys/tenant/org`, {}, data);
 }
 
 /**
@@ -58,7 +58,9 @@ export function updateTenant(data?: any) {
  * @returns .
  */
 export function resetPwdTenant(id: string) {
-  return http.put<any, any, string>(`/tenant/org/resetPassword`, { id: id });
+  return http.put<any, any, string>(`/sys/tenant/org/resetPassword`, {
+    id: id
+  });
 }
 
 /**
@@ -68,7 +70,7 @@ export function resetPwdTenant(id: string) {
  * @returns
  */
 export function getBasicConfigTenant(id: string) {
-  return http.get<any, any>(`/tenant/org/basic/config`, { id: id });
+  return http.get<any, any>(`/sys/tenant/org/basic/config`, { id: id });
 }
 
 /**
@@ -78,7 +80,7 @@ export function getBasicConfigTenant(id: string) {
  * @returns .
  */
 export function updateBasicConfigTenant(data: any) {
-  return http.put<any, any, string>(`/tenant/org/basic/config`, {}, data);
+  return http.put<any, any, string>(`/sys/tenant/org/basic/config`, {}, data);
 }
 
 /**
@@ -88,7 +90,7 @@ export function updateBasicConfigTenant(data: any) {
  * @param sysCode
  */
 export function getOssConfig(sysCode: string) {
-  return http.get<any, any>("/sys/oss/config", { sysCode: sysCode });
+  return http.get<any, any>("/sys/tenant/oss/config", { sysCode: sysCode });
 }
 
 /**
@@ -98,5 +100,5 @@ export function getOssConfig(sysCode: string) {
  * @returns .
  */
 export function updateOssConfig(data: any) {
-  return http.put<any, any, string>(`/sys/oss/config`, {}, data);
+  return http.put<any, any, string>(`/sys/tenant/oss/config`, {}, data);
 }

@@ -1,7 +1,7 @@
 import { isEmail, isPhone } from "@pureadmin/utils";
 import type { FormRules } from "element-plus";
 import { reactive, ref } from "vue";
-import { existsBySysCode } from "@/api/tenant/org";
+import { existsBySysCode } from "@/api/sys/tenant/org";
 
 const formData = ref();
 /** 自定义表单规则校验 */

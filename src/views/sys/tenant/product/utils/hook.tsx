@@ -1,7 +1,7 @@
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import { h, onMounted, reactive, ref } from "vue";
 import type { PaginationProps } from "@pureadmin/table";
-import * as productApi from "@/api/tenant/product";
+import * as productApi from "@/api/sys/tenant/product";
 import type { FormItemProps } from "./types";
 import { addDialog } from "@/components/ReDialog";
 import editForm from "../form.vue";
@@ -267,10 +267,19 @@ export function useProduct() {
   async function updateProduct(data: FormItemProps) {
     return productApi.updateProduct(data);
   }
-  async function deleteProduct(id: number) {
-    return productApi.deleteProduct(id);
+  async function deleteProduct(id: string) {
+    tableData.loading = true;
+    const res = await productApi.deleteProduct(id).finally(() => {
+      tableData.loading = false;
+    });
+    if (res.success) {
+      message(`删除成功`, {
+        type: "success"
+      });
+      onSearch();
+    }
   }
-  async function assignPermission(id: number, permissionIds?: number[]) {
+  async function assignPermission(id: string, permissionIds?: string[]) {
     return productApi.grantProduct(id, permissionIds);
   }
 

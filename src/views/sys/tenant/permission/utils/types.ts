@@ -1,6 +1,6 @@
 interface FormItemProps {
-  id?: number;
-  parentId?: number;
+  id?: string;
+  parentId?: string;
   children?: FormItemProps[];
   path?: string;
   routeName?: string;

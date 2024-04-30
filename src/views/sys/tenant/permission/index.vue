@@ -14,7 +14,8 @@ const {
   handleSearchFrom,
   onSearch,
   handleGetChild,
-  openDrawer
+  openDrawer,
+  handleDeleteMenu
 } = usePermission(tableRef);
 </script>
 
@@ -63,43 +64,38 @@ const {
           }"
         >
           <template #operation="{ row }">
-            <el-button
+            <el-link
               v-auth="permission.update"
               class="reset-margin"
-              link
               type="primary"
-              :size="size"
-              :icon="useRenderIcon('ri:edit-fill')"
+              :underline="false"
               @click="openDrawer('修改', row)"
             >
-              修改
-            </el-button>
-            <el-button
-              v-show="row.menuType !== 3"
+              修改 <el-divider direction="vertical" />
+            </el-link>
+            <el-link
+              v-show="row.menuType !== 4"
               v-auth="permission.save"
               class="reset-margin"
-              link
               type="primary"
-              :size="size"
-              :icon="useRenderIcon('ri:add-circle-fill')"
+              :underline="false"
               @click="openDrawer('新增', { parentId: row.id })"
             >
-              新增
-            </el-button>
+              新增 <el-divider direction="vertical" />
+            </el-link>
+
             <el-popconfirm
               :title="`是否确认删除菜单名称为${row.title}的这条数据${row?.children?.length > 0 ? '。注意下级菜单也会一并删除，请谨慎操作' : ''}`"
+              @confirm="handleDeleteMenu(row)"
             >
               <template #reference>
-                <el-button
+                <el-link
                   v-auth="permission.delete"
-                  class="reset-margin"
-                  link
                   type="primary"
-                  :size="size"
-                  :icon="useRenderIcon('ri:delete-bin-fill')"
+                  :underline="false"
                 >
                   删除
-                </el-button>
+                </el-link>
               </template>
             </el-popconfirm>
           </template>

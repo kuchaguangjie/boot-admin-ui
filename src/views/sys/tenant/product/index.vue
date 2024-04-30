@@ -16,7 +16,8 @@ const {
   handleChangePageSize,
   onSearch,
   openDialog,
-  openDrawer
+  openDrawer,
+  deleteProduct
 } = useProduct();
 
 const tableRef = ref();
@@ -85,39 +86,34 @@ defineOptions({
           @page-size-change="handleChangePageSize"
         >
           <template #operation="{ row }">
-            <el-button
+            <el-link
               v-auth="permission.update"
-              class="reset-margin"
-              link
               type="primary"
-              :icon="useRenderIcon('ri:edit-fill')"
+              :underline="false"
               @click="openDialog('修改', row)"
             >
-              编辑
-            </el-button>
-            <el-button
+              编辑 <el-divider direction="vertical" />
+            </el-link>
+            <el-link
               v-auth="permission.grant"
-              class="reset-margin"
-              link
               type="primary"
-              :size="size"
-              :icon="useRenderIcon('ep:menu')"
+              :underline="false"
               @click="openDrawer(row)"
             >
-              授权
-            </el-button>
-            <el-popconfirm :title="`是否删除产品:【${row.name}】`">
+              授权 <el-divider direction="vertical" />
+            </el-link>
+            <el-popconfirm
+              :title="`是否删除产品:【${row.name}】`"
+              @confirm="deleteProduct(row.id)"
+            >
               <template #reference>
-                <el-button
+                <el-link
                   v-auth="permission.delete"
-                  class="reset-margin"
-                  link
                   type="primary"
-                  :size="size"
-                  :icon="useRenderIcon('ri:delete-bin-fill')"
+                  :underline="false"
                 >
                   删除
-                </el-button>
+                </el-link>
               </template>
             </el-popconfirm>
           </template>

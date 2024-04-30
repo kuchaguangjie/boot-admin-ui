@@ -1,5 +1,5 @@
 interface FormItemProps {
-  id?: number;
+  id?: string;
   roles?: any[];
   roleList?: any[];
   roleIds?: number[];
@@ -7,6 +7,14 @@ interface FormItemProps {
    * 用户名
    */
   username?: string;
+  /**
+   * 密码
+   */
+  password?: string;
+  /**
+   * 确认密码
+   */
+  confirmPassword?: string;
   /**
    * 昵称
    */

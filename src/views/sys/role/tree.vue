@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, nextTick } from "vue";
 import { listTree } from "@/api/sys/permission";
+import { getPermission } from "@/api/sys/role";
 const props = withDefaults(
   defineProps<{
     formInline?: any;
@@ -20,14 +21,20 @@ const dataProps = ref({
 });
 const treeRef = ref();
 const checkStrictly = ref(false);
+const loading = ref(false);
 
 function loadPermissionTree() {
-  listTree(false).then(res => {
-    if (res.success) {
-      permissionTree.value = res.data;
-      loadRolePermission();
-    }
-  });
+  loading.value = true;
+  listTree(false)
+    .then(res => {
+      if (res.success) {
+        permissionTree.value = res.data;
+        loadRolePermission();
+      }
+    })
+    .catch(() => {
+      loading.value = false;
+    });
 }
 
 function handleCheckChange(data: any, checked: boolean) {
@@ -41,15 +48,24 @@ function handleCheckChange(data: any, checked: boolean) {
 }
 
 function loadRolePermission() {
-  const selectedIds = newFormInline.value.role?.permissionIds ?? [];
-  checkStrictly.value = true; //赋值之前先设置为true
-  nextTick(() => {
-    treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
-    newFormInline.value.selectedIds = selectedIds;
-    setTimeout(function () {
-      checkStrictly.value = false; //赋值完成后设置为false
-    }, 2000);
-  });
+  // const selectedIds = newFormInline.value.role?.permissionIds ?? [];
+  getPermission(newFormInline.value.role.id)
+    .then(res => {
+      if (res.success) {
+        const selectedIds = res.data;
+        checkStrictly.value = true; //赋值之前先设置为true
+        nextTick(() => {
+          treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
+          newFormInline.value.selectedIds = selectedIds;
+          setTimeout(function () {
+            checkStrictly.value = false; //赋值完成后设置为false
+          }, 2000);
+        });
+      }
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 
 onMounted(() => {
@@ -67,6 +83,7 @@ defineOptions({
     </h5>
     <el-tree-v2
       ref="treeRef"
+      v-loading="loading"
       :data="permissionTree"
       :props="dataProps"
       show-checkbox

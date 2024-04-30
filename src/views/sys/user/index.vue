@@ -41,6 +41,7 @@ defineOptions({
     <PureTableBar
       :columns="tableData.columns"
       :table-ref="tableRef?.getTableRef()"
+      @refresh="onSearch"
     >
       <template #title>
         <el-button
@@ -75,61 +76,61 @@ defineOptions({
           @page-size-change="handleChangePageSize"
         >
           <template #operation="{ row }">
-            <el-button
-              v-auth="permission.update"
-              class="reset-margin"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon('ri:edit-fill')"
-              :disabled="row.system"
-              @click="openDrawer('修改', row)"
-            >
-              修改
-            </el-button>
-            <el-popconfirm
-              :title="`是否删除用户: ${row.username}`"
-              @confirm="handleDelete(row)"
-            >
-              <template #reference>
-                <el-button
-                  v-auth="permission.delete"
-                  class="reset-margin"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon('ri:delete-bin-fill')"
-                  :disabled="row.system"
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-popconfirm>
-            <el-dropdown :disabled="row.admin">
-              <el-button
-                class="ml-3 mt-[2px]"
-                link
+            <div class="flex items-center">
+              <el-link
+                v-auth="permission.update"
+                class="reset-margin"
                 type="primary"
+                :underline="false"
                 :size="size"
-                :icon="useRenderIcon('ri:more-fill')"
-              />
-              <template #dropdown>
-                <el-dropdown-item>
-                  <el-button
-                    v-auth="permission.resetPwd"
-                    :class="buttonClass"
-                    link
+                :disabled="row.system"
+                @click="openDrawer('修改', row)"
+              >
+                修改 <el-divider direction="vertical" />
+              </el-link>
+              <el-popconfirm
+                :title="`是否删除用户: ${row.username}`"
+                :disabled="row.system"
+                @confirm="handleDelete(row)"
+              >
+                <template #reference>
+                  <el-link
+                    v-auth="permission.delete"
+                    class="reset-margin"
                     type="primary"
+                    :underline="false"
                     :size="size"
-                    :icon="useRenderIcon('ri:lock-password-fill')"
                     :disabled="row.system"
-                    @click="handleRestPwd(row)"
                   >
-                    重置密码
-                  </el-button>
-                </el-dropdown-item>
-              </template>
-            </el-dropdown>
+                    删除 <el-divider direction="vertical" />
+                  </el-link>
+                </template>
+              </el-popconfirm>
+              <el-dropdown :disabled="row.admin">
+                <el-link
+                  :size="size"
+                  class="reset-margin"
+                  type="primary"
+                  :underline="false"
+                >
+                  更多 <component :is="useRenderIcon('ep:arrow-down-bold')" />
+                </el-link>
+                <template #dropdown>
+                  <el-dropdown-item>
+                    <el-link
+                      v-auth="permission.resetPwd"
+                      type="primary"
+                      :size="size"
+                      :disabled="row.system"
+                      :underline="false"
+                      @click="handleRestPwd(row)"
+                    >
+                      重置密码
+                    </el-link>
+                  </el-dropdown-item>
+                </template>
+              </el-dropdown>
+            </div>
           </template>
         </pure-table>
       </template>

@@ -1,11 +1,11 @@
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import { type Ref, h, onMounted, reactive, ref } from "vue";
-import * as permissionApi from "@/api/tenant/permission";
+import * as permissionApi from "@/api/sys/tenant/permission";
 import type { FormItemProps, TableColumnsProps } from "./types";
-import { isAllEmpty } from "@pureadmin/utils";
+import { isAllEmpty, isFunction } from "@pureadmin/utils";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import editForm from "../form.vue";
-import { addDrawer } from "@/components/ReDrawer";
+import { addDrawer, closeDrawer } from "@/components/ReDrawer";
 import { message } from "@/utils/message";
 import { getMenuType, menuTypeOptionMap } from "@/utils/constants";
 
@@ -143,7 +143,7 @@ export function usePermission(tableRef: Ref) {
         formInline: {
           id: row?.id ?? undefined,
           menuType: row?.menuType ?? 1,
-          parentId: row?.parentId ?? 0,
+          parentId: row?.parentId ?? undefined,
           title: row?.title ?? "",
           routeName: row?.routeName ?? "",
           path: row?.path ?? "",
@@ -163,6 +163,37 @@ export function usePermission(tableRef: Ref) {
       width: "45%",
       fullscreenIcon: true,
       closeOnClickModal: false,
+      footerButtons: [
+        {
+          label: "取消",
+          bg: true,
+          btnClick: ({ drawer: { options, index } }) => {
+            const done = () =>
+              closeDrawer(options, index, { command: "cancel" });
+            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
+              options.beforeCancel(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        },
+        {
+          label: "确认",
+          type: "primary",
+          bg: true,
+          confirm: true,
+          tips: "确认保存当前数据",
+          btnClick: ({ drawer: { options, index } }) => {
+            const done = () =>
+              closeDrawer(options, index, { command: "confirm" });
+            if (options?.beforeSure && isFunction(options?.beforeSure)) {
+              options.beforeSure(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        }
+      ],
       contentRenderer: () => h(editForm, { ref: formRef }),
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
@@ -231,18 +262,23 @@ export function usePermission(tableRef: Ref) {
   async function handleDeleteMenu(data: FormItemProps) {
     const { success } = await permissionApi.deletePermission(data.id);
     if (success) {
-      const _tableRef = tableRef.value.getTableRef();
-      const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
-      if (
-        _tableRef.store.states.lazyTreeNodeMap.value[data.parentId]?.length > 1
-      ) {
-        //说明该节点下有多个子节点
-        _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+      if (data.parentId) {
+        const _tableRef = tableRef.value.getTableRef();
+        const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
+        if (
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId]?.length >
+          1
+        ) {
+          //说明该节点下有多个子节点
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        } else {
+          //说明该节点只有一个节点
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        }
+        handleGetChild(row, treeNode, resolve);
       } else {
-        //说明该节点只有一个节点
-        _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        onSearch();
       }
-      handleGetChild(row, treeNode, resolve);
     }
   }
   /*=======search========*/
@@ -251,8 +287,12 @@ export function usePermission(tableRef: Ref) {
   }
   async function onSearch() {
     tableData.loading = true;
+    const params = {
+      ...searchData.data,
+      sorts: "rank"
+    };
     permissionApi
-      .loadPermission(searchData.data)
+      .loadPermission(params)
       .then(res => {
         const { success, data } = res;
         if (success) {

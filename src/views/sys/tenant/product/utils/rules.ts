@@ -1,6 +1,6 @@
 import { reactive, ref } from "vue";
 import type { FormRules } from "element-plus";
-import { existsByCode } from "@/api/tenant/product";
+import { existsByCode } from "@/api/sys/tenant/product";
 
 const formData = ref();
 

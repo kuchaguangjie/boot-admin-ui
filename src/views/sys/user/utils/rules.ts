@@ -30,6 +30,26 @@ export const formRules = reactive(<FormRules>{
       trigger: "blur"
     }
   ],
+  password: [
+    { required: true, message: "密码为必填项", trigger: "blur" },
+    { min: 6, message: "密码长度至少为6位", trigger: "blur" }
+  ],
+  confirmPassword: [
+    { required: true, message: "确认密码为必填项", trigger: "blur" },
+    {
+      validator: (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error("请输入确认密码"));
+        }
+        if (value !== formData.value.password) {
+          callback(new Error("两次输入密码不一致"));
+        } else {
+          callback();
+        }
+      },
+      trigger: "blur"
+    }
+  ],
   nickname: [{ required: true, message: "用户昵称为必填项", trigger: "blur" }],
   phone: [
     {
