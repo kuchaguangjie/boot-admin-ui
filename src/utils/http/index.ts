@@ -150,7 +150,7 @@ class PureHttp {
                 await useAuthStoreHook()
                   .logout()
                   .then(() => {
-                    location.href = "/logout";
+                    location.href = "/";
                   });
               })
               .catch(() => {
