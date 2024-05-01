@@ -74,35 +74,85 @@ defineOptions({
           @page-size-change="handleChangePageSize"
         >
           <template #operation="{ row }">
-            <el-link
-              v-auth="permission.edit"
-              :underline="false"
-              type="primary"
-              @click="openDialog('修改', row)"
-            >
-              修改</el-link
-            >
-            <el-divider v-auth="permission.run" direction="vertical" />
+            <div class="flex items-center">
+              <el-link
+                v-auth="permission.edit"
+                :underline="false"
+                type="primary"
+                @click="openDialog('修改', row)"
+              >
+                修改 <el-divider direction="vertical" />
+              </el-link>
 
-            <el-popconfirm
-              :title="`是否执行: ${row.jobName}任务`"
-              @confirm="handleRun(row)"
-            >
-              <template #reference>
-                <el-link
-                  v-auth="permission.run"
-                  :underline="false"
-                  type="primary"
-                >
-                  执行</el-link
-                >
-              </template>
-            </el-popconfirm>
-            <el-divider
-              v-auth="[...permission.pause, ...permission.resume]"
-              direction="vertical"
-            />
-            <el-popconfirm
+              <el-popconfirm
+                :title="`是否执行: ${row.jobName}任务`"
+                @confirm="handleRun(row)"
+              >
+                <template #reference>
+                  <el-link
+                    v-auth="permission.run"
+                    :underline="false"
+                    type="primary"
+                  >
+                    执行 <el-divider direction="vertical" />
+                  </el-link>
+                </template>
+              </el-popconfirm>
+
+              <!--下拉-->
+              <el-dropdown trigger="click" :hide-on-click="false">
+                <el-link type="primary" :underline="false"> 更多操作 </el-link>
+                <template #dropdown>
+                  <el-dropdown-item v-if="!row.enabled">
+                    <el-popconfirm
+                      :title="`是否恢复: ${row.jobName}任务`"
+                      @confirm="handleResume(row)"
+                    >
+                      <template #reference>
+                        <el-link
+                          v-auth="permission.resume"
+                          :underline="false"
+                          type="primary"
+                          >恢复</el-link
+                        >
+                      </template>
+                    </el-popconfirm>
+                  </el-dropdown-item>
+                  <el-dropdown-item v-else>
+                    <el-popconfirm
+                      :title="`是否暂停: ${row.jobName}任务`"
+                      @confirm="handlePause(row)"
+                    >
+                      <template #reference>
+                        <el-link
+                          v-auth="permission.pause"
+                          :underline="false"
+                          type="primary"
+                          >暂停</el-link
+                        >
+                      </template>
+                    </el-popconfirm>
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <el-popconfirm
+                      :title="`是否删除任务: ${row.jobName}`"
+                      @confirm="handleDelete(row)"
+                    >
+                      <template #reference>
+                        <el-link
+                          v-auth="permission.delete"
+                          :underline="false"
+                          type="primary"
+                          >删除</el-link
+                        >
+                      </template>
+                    </el-popconfirm>
+                  </el-dropdown-item>
+                </template>
+              </el-dropdown>
+            </div>
+
+            <!-- <el-popconfirm
               v-if="!row.enabled"
               :title="`支付恢复: ${row.jobName}任务`"
               @confirm="handleResume(row)"
@@ -143,7 +193,7 @@ defineOptions({
                   >删除</el-link
                 >
               </template>
-            </el-popconfirm>
+            </el-popconfirm> -->
           </template>
         </pure-table>
       </template>
