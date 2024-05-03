@@ -306,8 +306,13 @@ export function useRole() {
           done(); // 关闭弹框
           onSearch(); // 刷新表格数据
         }
-        await assignPermission(curData.role?.id, curData.selectedIds);
-        chores();
+        const { success } = await assignPermission(
+          curData.role?.id,
+          curData.selectedIds
+        );
+        if (success) {
+          chores();
+        }
       }
     });
   }

@@ -1,5 +1,5 @@
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
-import { enabledOptions, usePublicHooks } from "@/utils/constants";
+import { enabledOptions, genderMap, usePublicHooks } from "@/utils/constants";
 import type { PaginationProps } from "@pureadmin/table";
 import { h, onMounted, reactive, ref } from "vue";
 import { treeOrg } from "@/api/basic/org";
@@ -26,6 +26,15 @@ export function useUser() {
   const { switchStyle } = usePublicHooks();
   const formRef = ref();
   const restPwdFormRef = ref();
+  const genderType = (val: number) => {
+    if (val === 1) {
+      return "info";
+    }
+    if (val === 2) {
+      return "danger";
+    }
+    return "warning";
+  };
 
   // 当前密码强度（0-4）
   const curScore = ref();
@@ -131,10 +140,10 @@ export function useUser() {
         cellRenderer: ({ row, props }) => (
           <el-tag
             size={props.size}
-            type={row.gender === 1 ? "danger" : null}
+            type={genderType(row.gender)}
             effect="plain"
           >
-            {row.gender === 1 ? "女" : "男"}
+            {genderMap[row.gender]}
           </el-tag>
         )
       },
@@ -194,7 +203,6 @@ export function useUser() {
   });
 
   async function openDrawer(title = "新增", data?: FormItemProps) {
-    const res = await userApi.getRoles(data?.id ?? "");
     addDrawer({
       title: `${title}用户`,
       width: "35%",
@@ -204,8 +212,7 @@ export function useUser() {
           org: data?.org ?? undefined,
           orgId: data?.org?.id ?? currentOrg?.value ?? "",
           roles: data?.roles ?? [],
-          // roleIds: data?.roles?.map((item: any) => item.id) ?? [],
-          roleIds: res?.data ?? [],
+          roleIds: data?.roles?.map((item: any) => item.id) ?? [],
           username: data?.username ?? "",
           nickname: data?.nickname ?? "",
           password: "",
@@ -317,7 +324,6 @@ export function useUser() {
             icon: "el-icon-warning",
             iconColor: "var(--el-color-warning)"
           },
-          tips: `重置 ${row.username} 用户的密码`,
           btnClick: ({ dialog: { options, index } }) => {
             const done = () => closeDialog(options, index, { command: "sure" });
             if (options?.beforeSure && isFunction(options?.beforeSure)) {

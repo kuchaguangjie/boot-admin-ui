@@ -253,7 +253,8 @@ export function useProduct() {
     const params = {
       ...searchData.data,
       current: pagination.currentPage,
-      size: pagination.pageSize
+      size: pagination.pageSize,
+      sorts: "created desc"
     };
     const { success, data } = await productApi
       .pageProduct(params)

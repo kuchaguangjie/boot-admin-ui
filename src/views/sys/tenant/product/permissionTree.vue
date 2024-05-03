@@ -36,29 +36,20 @@ function loadPermissionTree() {
         loadRolePermission();
       }
     })
-    .catch(() => {
+    .finally(() => {
       loading.value = false;
     });
 }
 function loadRolePermission() {
-  // const selectedIds = newFormInline.value.role?.permissionIds ?? [];
-  getPermission(newFormInline.value.role.id)
-    .then(res => {
-      if (res.success) {
-        const selectedIds = res.data;
-        checkStrictly.value = true; //赋值之前先设置为true
-        nextTick(() => {
-          treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
-          newFormInline.value.selectedIds = selectedIds;
-          setTimeout(function () {
-            checkStrictly.value = false; //赋值完成后设置为false
-          }, 500);
-        });
-      }
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  const selectedIds = newFormInline.value.role?.permissionIds ?? [];
+  checkStrictly.value = true; //赋值之前先设置为true
+  nextTick(() => {
+    treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
+    newFormInline.value.selectedIds = selectedIds;
+    setTimeout(function () {
+      checkStrictly.value = false; //赋值完成后设置为false
+    }, 300);
+  });
 }
 function handleCheckChange(data: any, checked: boolean) {
   const selectedNodes = treeRef.value.getCheckedNodes(); // 重点

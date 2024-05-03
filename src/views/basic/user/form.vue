@@ -3,8 +3,9 @@ import ReCol from "@/components/ReCol";
 import { ref } from "vue";
 import { FormProps } from "./utils/types";
 import { useFormRule } from "./utils/rules";
-import { usePublicHooks } from "@/utils/constants";
+import { genderOptions, usePublicHooks } from "@/utils/constants";
 import { computed } from "vue";
+import ReSegmented from "@/components/ReSegmented";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
@@ -140,6 +141,19 @@ defineExpose({ getRef });
               :value="item.id"
             />
           </el-select>
+        </el-form-item>
+      </re-col>
+      <re-col :value="12" :xs="24" :sm="24">
+        <el-form-item label="性别" prop="gender">
+          <ReSegmented
+            v-model="newFormInline.gender"
+            :options="genderOptions"
+            @change="
+              ({ option: { value } }) => {
+                newFormInline.gender = value;
+              }
+            "
+          />
         </el-form-item>
       </re-col>
       <re-col :value="12" :xs="24" :sm="24">

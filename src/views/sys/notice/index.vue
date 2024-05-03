@@ -80,30 +80,31 @@ defineOptions({
           @page-size-change="handleChangePageSize"
         >
           <template #operation="{ row }">
-            <el-button
+            <el-link
               v-auth="permission.edit"
               class="reset-margin"
-              link
               type="primary"
               :size="size"
-              :icon="useRenderIcon('ri:edit-fill')"
+              :underline="false"
               @click="openDialog('修改', row)"
             >
-              修改
-            </el-button>
-            <el-popconfirm :title="`是否删除公告: ${row.title}`">
+              修改 <el-divider direction="vertical" />
+            </el-link>
+
+            <el-popconfirm
+              :title="`是否删除公告: ${row.title}`"
+              @confirm="handleDelete(row)"
+            >
               <template #reference>
-                <el-button
+                <el-link
                   v-auth="permission.delete"
                   class="reset-margin"
-                  link
                   type="primary"
                   :size="size"
-                  :icon="useRenderIcon('ri:delete-bin-fill')"
-                  @click="handleDelete(row)"
+                  :underline="false"
                 >
                   删除
-                </el-button>
+                </el-link>
               </template>
             </el-popconfirm>
           </template>

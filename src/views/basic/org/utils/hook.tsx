@@ -94,7 +94,7 @@ export function useOrg(tableRef: Ref) {
         cellRenderer: ({ row, props }) => (
           <el-tag
             size={props.size}
-            style={tagEnabledStyle.value}
+            style={tagEnabledStyle.value(row.enabled)}
             effect="plain"
           >
             {enabledMap[row.enabled]}
@@ -265,7 +265,16 @@ export function useOrg(tableRef: Ref) {
         //重新刷新当前节点的子节点
         const _tableRef = tableRef.value.getTableRef();
         const { row, treeNode, resolve } = tableMaps.value.get(data.parentId);
-        _tableRef.store.states.lazyTreeNodeMap.value[row.parentId] = [];
+        if (
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId]?.length >
+          1
+        ) {
+          //说明该节点下有多个子节点
+          _tableRef.store.states.lazyTreeNodeMap[data.parentId] = [];
+        } else {
+          //说明该节点只有一个节点
+          _tableRef.store.states.lazyTreeNodeMap.value[data.parentId] = [];
+        }
         handleGetChild(row, treeNode, resolve);
       } else {
         onSearch();

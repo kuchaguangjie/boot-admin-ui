@@ -313,7 +313,8 @@ export function useOrg() {
     const params = {
       ...searchData.data,
       current: pagination.currentPage,
-      size: pagination.pageSize
+      size: pagination.pageSize,
+      sorts: "created desc"
     };
     const { success, data } = await tenantOrgApi
       .pageTenant(params)

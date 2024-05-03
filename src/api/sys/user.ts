@@ -23,17 +23,6 @@ export function existsByUsername(username: string, id?: number) {
     id: id
   });
 }
-
-/**
- * 获取用户角色
- *
- * @param email
- * @param id
- * @returns
- */
-export function getRoles(id: string) {
-  return http.get<any, any>(`/sys/user/roles`, { userId: id });
-}
 /**
  * 保存用户
  *

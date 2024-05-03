@@ -8,6 +8,7 @@ import { treeOrg } from "@/api/basic/org";
 import { onMounted } from "vue";
 import ReSegmented from "@/components/ReSegmented";
 import { computed } from "vue";
+import { usePublicHooks } from "@/utils/constants";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
@@ -25,6 +26,7 @@ const props = withDefaults(defineProps<FormProps>(), {
     saas: false
   })
 });
+const { switchStyle } = usePublicHooks();
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
 const orgTreeData = ref([]);
@@ -132,6 +134,18 @@ defineExpose({
                 newFormInline.type = value;
               }
             "
+          />
+        </el-form-item>
+      </re-col>
+      <re-col :value="12" :xs="24" :sm="24">
+        <el-form-item label="是否启用" prop="enabled">
+          <el-switch
+            v-model="newFormInline.enabled"
+            :active-value="true"
+            :inactive-value="false"
+            active-text="启用"
+            inactive-text="停用"
+            :style="switchStyle"
           />
         </el-form-item>
       </re-col>

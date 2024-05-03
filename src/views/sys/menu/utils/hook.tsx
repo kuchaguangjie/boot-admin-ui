@@ -225,11 +225,15 @@ export function useMenu(tableRef: Ref) {
         FormRef.validate(async valid => {
           if (valid) {
             if (curData.id) {
-              await updateMenu(curData);
-              chores();
+              const { success } = await updateMenu(curData);
+              if (success) {
+                chores();
+              }
             } else {
-              await addMenu(curData);
-              chores();
+              const { success } = await addMenu(curData);
+              if (success) {
+                chores();
+              }
             }
           }
         });
@@ -250,6 +254,7 @@ export function useMenu(tableRef: Ref) {
         handleGetChild(row, treeNode, resolve);
       }
     }
+    return { success };
   }
   async function updateMenu(data: FormItemProps) {
     const { success } = await permissionApi.updateMenu(data);
@@ -272,6 +277,7 @@ export function useMenu(tableRef: Ref) {
         }
       );
     }
+    return { success };
   }
   async function handleDeleteMenu(data: FormItemProps) {
     const { success } = await permissionApi.deleteMenu(data.id);

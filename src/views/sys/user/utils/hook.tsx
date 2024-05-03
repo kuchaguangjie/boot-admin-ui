@@ -16,7 +16,7 @@ import {
   ElMessageBox,
   ElProgress
 } from "element-plus";
-import { addDialog } from "@/components/ReDialog";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import { zxcvbn } from "@zxcvbn-ts/core";
 import { watch } from "vue";
 import { enabledOptions, genderMap, usePublicHooks } from "@/utils/constants";
@@ -195,18 +195,17 @@ export function useUser() {
   });
 
   async function openDrawer(title = "新增", row?: FormItemProps) {
-    const { data } = await userApi.getRoles(row?.id ?? "");
     addDrawer({
       title: `${title}用户`,
       width: "40%",
       props: {
         formInline: {
           id: row?.id ?? undefined,
-          // roleIds: row?.roles?.map(e => e.id) ?? [],
-          roleIds: data?.map(e => e.id) ?? [],
+          roleIds: row?.roles?.map(e => e.id) ?? [],
           roleList: roleData.value,
           username: row?.username ?? "",
           nickname: row?.nickname ?? "",
+          gender: row?.gender ?? 1,
           phone: row?.phone ?? "",
           email: row?.email ?? "",
           enabled: row?.enabled ?? true
@@ -286,6 +285,39 @@ export function useUser() {
       width: "30%",
       draggable: true,
       closeOnClickModal: false,
+      footerButtons: [
+        {
+          label: "取消",
+          bg: true,
+          btnClick: ({ dialog: { options, index } }) => {
+            const done = () =>
+              closeDialog(options, index, { command: "cancel" });
+            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
+              options.beforeCancel(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        },
+        {
+          label: "确认",
+          type: "primary",
+          bg: true,
+          popconfirm: {
+            title: "确定要重置密码吗？",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消"
+          },
+          btnClick: ({ dialog: { options, index } }) => {
+            const done = () => closeDialog(options, index, { command: "sure" });
+            if (options?.beforeSure && isFunction(options?.beforeSure)) {
+              options.beforeSure(done, { options, index });
+            } else {
+              done();
+            }
+          }
+        }
+      ],
       fullscreen: deviceDetection(),
       contentRenderer: () => (
         <>

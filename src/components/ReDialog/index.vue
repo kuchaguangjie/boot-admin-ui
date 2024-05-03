@@ -157,7 +157,7 @@ function handleClose(
         <template v-for="(btn, key) in footerButtons(options)" :key="key">
           <el-popconfirm
             v-if="btn.popconfirm"
-            :title="btn?.tips"
+            v-bind="btn.popconfirm"
             @confirm="
               btn.btnClick({
                 dialog: { options, index },

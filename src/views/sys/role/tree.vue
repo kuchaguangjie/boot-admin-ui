@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, nextTick } from "vue";
 import { listTree } from "@/api/sys/permission";
-import { getPermission } from "@/api/sys/role";
 const props = withDefaults(
   defineProps<{
     formInline?: any;
@@ -32,7 +31,7 @@ function loadPermissionTree() {
         loadRolePermission();
       }
     })
-    .catch(() => {
+    .finally(() => {
       loading.value = false;
     });
 }
@@ -48,24 +47,15 @@ function handleCheckChange(data: any, checked: boolean) {
 }
 
 function loadRolePermission() {
-  // const selectedIds = newFormInline.value.role?.permissionIds ?? [];
-  getPermission(newFormInline.value.role.id)
-    .then(res => {
-      if (res.success) {
-        const selectedIds = res.data;
-        checkStrictly.value = true; //赋值之前先设置为true
-        nextTick(() => {
-          treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
-          newFormInline.value.selectedIds = selectedIds;
-          setTimeout(function () {
-            checkStrictly.value = false; //赋值完成后设置为false
-          }, 2000);
-        });
-      }
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  const selectedIds = newFormInline.value.role?.permissionIds ?? [];
+  checkStrictly.value = true; //赋值之前先设置为true
+  nextTick(() => {
+    treeRef.value.setCheckedKeys(selectedIds); //给树节点赋值
+    newFormInline.value.selectedIds = selectedIds;
+    setTimeout(function () {
+      checkStrictly.value = false; //赋值完成后设置为false
+    }, 2000);
+  });
 }
 
 onMounted(() => {

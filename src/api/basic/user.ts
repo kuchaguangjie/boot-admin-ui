@@ -11,16 +11,6 @@ export function pageUser(query?: any) {
 }
 
 /**
- * 获取用户角色
- *
- * @param id
- * @returns
- */
-export function getRoles(id: string) {
-  return http.get<any, any>(`/bas/user/roles`, { id });
-}
-
-/**
  * 账户是否存在
  *
  * @param username

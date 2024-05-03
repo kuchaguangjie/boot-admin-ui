@@ -58,16 +58,6 @@ export function updateRole(data: any) {
 export function deleteRole(id: string) {
   return http.del<any, any, string>(`/sys/role`, { id: id });
 }
-
-/**
- * 获取权限
- *
- * @param id
- * @returns
- */
-export function getPermission(id: string) {
-  return http.get<any, any>(`/sys/role/permission`, { roleId: id });
-}
 /**
  * 赋权
  *
