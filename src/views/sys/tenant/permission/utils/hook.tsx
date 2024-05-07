@@ -128,7 +128,8 @@ export function usePermission(tableRef: Ref) {
     // load 函数中的将当前行信息保存
     tableMaps.value.set(row.id, { row, treeNode, resolve });
     const { success, data } = await permissionApi.loadPermission({
-      parentId: row.id
+      parentId: row.id,
+      sorts: "rank"
     });
     if (success) {
       data.forEach(el => {
@@ -208,11 +209,15 @@ export function usePermission(tableRef: Ref) {
         FormRef.validate(async valid => {
           if (valid) {
             if (curData.id) {
-              await updateMenu(curData);
-              chores();
+              const { success } = await updateMenu(curData);
+              if (success) {
+                chores();
+              }
             } else {
-              await addMenu(curData);
-              chores();
+              const { success } = await addMenu(curData);
+              if (success) {
+                chores();
+              }
             }
           }
         });
@@ -230,6 +235,7 @@ export function usePermission(tableRef: Ref) {
         handleGetChild(row, treeNode, resolve);
       }
     }
+    return { success };
   }
   async function updateMenu(data: FormItemProps) {
     const { success } = await permissionApi.updatePermission(data);
@@ -262,6 +268,7 @@ export function usePermission(tableRef: Ref) {
         onSearch();
       }
     }
+    return { success };
   }
   async function handleDeleteMenu(data: FormItemProps) {
     const { success } = await permissionApi.deletePermission(data.id);
@@ -284,6 +291,7 @@ export function usePermission(tableRef: Ref) {
         onSearch();
       }
     }
+    return { success };
   }
   /*=======search========*/
   function handleSearchFrom(data: any) {

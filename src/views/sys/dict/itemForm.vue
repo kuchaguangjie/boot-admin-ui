@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, ref, withDefaults } from "vue";
+import { ref } from "vue";
 import { FormDictItemProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import Segmented from "@/components/ReSegmented";

@@ -1,34 +1,27 @@
-import { h, onMounted, reactive, ref } from "vue";
-import editForm from "../form.vue";
-import permissionTreeForm from "../tree.vue";
-import TreeFooter from "../treeFooter.vue";
-
-import type { OptionsType } from "@/components/ReSegmented";
-import type { PaginationProps } from "@pureadmin/table";
-import type { FormItemProps } from "./types";
-import { enabledOptions, usePublicHooks } from "@/utils/constants";
 import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
-import { ElMessageBox } from "element-plus";
-import { message } from "@/utils/message";
+import type { OptionsType } from "@/components/ReSegmented";
+import { enabledOptions, usePublicHooks } from "@/utils/constants";
+import type { PaginationProps } from "@pureadmin/table";
+import { h, onMounted, reactive, ref } from "vue";
+import * as postApi from "@/api/basic/post";
+import type { FormItemProps } from "./types";
 import { addDialog } from "@/components/ReDialog";
-import * as roleApi from "@/api/basic/role";
-import { addDrawer, closeDrawer } from "@/components/ReDrawer";
-import { isFunction } from "@pureadmin/utils";
+import editForm from "../form.vue";
+import { message } from "@/utils/message";
+import { ElMessageBox } from "element-plus";
 
-export function useRole() {
-  const formRef = ref();
-  const treeRef = ref();
-
+export function usePost() {
   const switchLoadMap = ref({});
   const { switchStyle } = usePublicHooks();
+  const formRef = ref();
 
-  const permission = reactive({
-    query: ["bas:role:query"],
-    save: ["bas:role:save"],
-    edit: ["bas:role:update"],
-    delete: ["bas:role:delete"],
-    grantPermission: ["bas:role:grant"]
+  const permissions = reactive({
+    query: ["bas:post:page"],
+    save: ["bas:post:save"],
+    edit: ["bas:post:update"],
+    delete: ["bas:post:delete"]
   });
+
   const searchData = reactive<{
     show: boolean;
     formItems: SearchFormItems;
@@ -42,19 +35,19 @@ export function useRole() {
     formItems: [
       {
         type: "input",
-        label: "角色名称",
+        label: "岗位编码",
         options: {
-          prop: "name",
-          placeholder: "请输入角色名称",
+          prop: "code",
+          placeholder: "请输入岗位编码",
           clearable: true
         }
       },
       {
         type: "input",
-        label: "角色标识",
+        label: "岗位名称",
         options: {
-          prop: "code",
-          placeholder: "请输入角色标识",
+          prop: "name",
+          placeholder: "请输入岗位名称",
           clearable: true
         }
       },
@@ -78,28 +71,33 @@ export function useRole() {
       enabledOptions: enabledOptions
     }
   });
+
   const pagination = reactive<PaginationProps>({
     total: 0,
     pageSize: 10,
     currentPage: 1,
     background: true
   });
+
   const tableData = reactive<{
     loading: boolean;
     dataList: Array<any>;
     columns: TableColumnList;
   }>({
+    loading: false,
+    dataList: [],
     columns: [
       {
-        label: "角色名称",
-        prop: "name"
-      },
-      {
-        label: "角色标识",
+        label: "岗位编码",
         prop: "code"
       },
       {
+        label: "岗位名称",
+        prop: "name"
+      },
+      {
         label: "状态",
+        prop: "enabled",
         cellRenderer: scope => (
           <el-switch
             size={scope.props.size === "small" ? "small" : "default"}
@@ -111,34 +109,28 @@ export function useRole() {
             inactive-text="已停用"
             inline-prompt
             style={switchStyle.value}
-            onChange={() => onChange(scope as any)}
+            onChange={() => onChangeEnabled(scope as any)}
             disabled={scope.row.system}
           />
-        ),
-        minWidth: 90
+        )
       },
       {
-        label: "备注",
-        prop: "description",
-        minWidth: 160
+        label: "描述",
+        prop: "description"
       },
       {
         label: "创建时间",
-        prop: "created",
-        minWidth: 160
+        prop: "created"
       },
       {
         label: "操作",
         fixed: "right",
-        width: 210,
         slot: "operation"
       }
-    ],
-    loading: false,
-    dataList: []
+    ]
   });
 
-  function onChange({ row, index }) {
+  function onChangeEnabled({ row, index }) {
     ElMessageBox.confirm(
       `确认要<strong>${
         row.enabled ? "启用" : "停用"
@@ -163,7 +155,7 @@ export function useRole() {
           }
         );
         row.enabled = !row.enabled ? false : true;
-        const { success } = await updateRole(row);
+        const { success } = await postApi.postUpdate(row);
         if (success) {
           switchLoadMap.value[index] = Object.assign(
             {},
@@ -185,14 +177,15 @@ export function useRole() {
 
   function openDialog(title = "新增", data?: FormItemProps) {
     addDialog({
-      title: `${title}角色`,
+      title: `${title}岗位`,
       props: {
         formInline: {
-          id: data?.id ?? undefined,
-          name: data?.name ?? "",
+          id: data?.id ?? null,
           code: data?.code ?? "",
+          name: data?.name ?? "",
+          enabled: data?.enabled ?? true,
           description: data?.description ?? "",
-          enabled: data?.enabled ?? true
+          sort: data?.sort ?? 0
         }
       },
       width: "40%",
@@ -213,12 +206,12 @@ export function useRole() {
         FormRef.validate(async valid => {
           if (valid) {
             if (curData.id) {
-              const { success } = await updateRole(curData);
+              const { success } = await postApi.postUpdate(curData);
               if (success) {
                 chores();
               }
             } else {
-              const { success } = await addRole(curData);
+              const { success } = await postApi.postSave(curData);
               if (success) {
                 chores();
               }
@@ -240,6 +233,18 @@ export function useRole() {
     pagination.pageSize = val;
     onSearch();
   }
+  async function handleDelete(id: string) {
+    tableData.loading = true;
+    const { success } = await postApi.postDelete(id).finally(() => {
+      tableData.loading = false;
+    });
+    if (success) {
+      message("删除成功", {
+        type: "success"
+      });
+      onSearch();
+    }
+  }
 
   async function onSearch() {
     tableData.loading = true;
@@ -247,9 +252,9 @@ export function useRole() {
       ...searchData.data,
       current: pagination.currentPage,
       size: pagination.pageSize,
-      sorts: "created desc"
+      sorts: "sort desc"
     };
-    const { success, data } = await roleApi.pageRole(params).finally(() => {
+    const { success, data } = await postApi.postPage(params).finally(() => {
       tableData.loading = false;
     });
     if (success) {
@@ -257,102 +262,21 @@ export function useRole() {
       pagination.total = data.total;
     }
   }
-  /**
-   * 角色赋权
-   */
-  function openPermission(row?: any) {
-    addDrawer({
-      title: "角色权限配置",
-      props: {
-        formInline: {
-          role: row,
-          selectedIds: []
-        }
-      },
-      width: "45%",
-      fullscreenIcon: true,
-      closeOnClickModal: false,
-      footerRenderer: ({ options, index }) =>
-        h(TreeFooter, {
-          onClose() {
-            const done = () =>
-              closeDrawer(options, index, { command: "cancel" });
-            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
-              options.beforeCancel(done, { options, index });
-            } else {
-              done();
-            }
-          },
-          onConfirm() {
-            const done = () => closeDrawer(options, index, { command: "sure" });
-            if (options?.beforeSure && isFunction(options?.beforeSure)) {
-              options.beforeSure(done, { options, index });
-            } else {
-              done();
-            }
-          },
-          onSelect() {
-            treeRef.value.handleSelectAll();
-          },
-          onUnSelect() {
-            treeRef.value.handleUnSelectAll();
-          },
-          onCollapse() {
-            treeRef.value.handleCollapseAll();
-          },
-          onExpand() {
-            treeRef.value.handleExpandAll();
-          }
-        }),
-      contentRenderer: () => h(permissionTreeForm, { ref: treeRef }),
-      beforeSure: async (done, { options }) => {
-        const curData = options.props.formInline;
-        function chores() {
-          message(`更新成功`, {
-            type: "success"
-          });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        }
-        await assignPermission(curData.role?.id, curData.selectedIds);
-        chores();
-      }
-    });
-  }
-  async function handleDeleteRole(row: any) {
-    const { success } = await deleteRole(row.id);
-    if (success) {
-      message(`已删除${row.name}`, { type: "success" });
-      onSearch();
-    }
-  }
-  async function addRole(data: FormItemProps) {
-    return roleApi.saveRole(data);
-  }
-  async function updateRole(data: FormItemProps) {
-    return roleApi.updateRole(data);
-  }
-  async function deleteRole(id: string) {
-    return roleApi.deleteRole(id);
-  }
-  async function assignPermission(id: string, permissionIds?: number[]) {
-    return roleApi.assignPermission(id, permissionIds);
-  }
+
   onMounted(() => {
     onSearch();
   });
 
   return {
+    permissions,
     searchData,
     pagination,
     tableData,
-    permission,
-    openDialog,
     handleSetSearchForm,
-    onSearch,
     handleChangeCurrentPage,
     handleChangePageSize,
-    handleDeleteRole,
-    openPermission
+    onSearch,
+    openDialog,
+    handleDelete
   };
 }
