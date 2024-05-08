@@ -4,6 +4,8 @@ interface FormItemProps {
   orgId?: string;
   roles?: Array<any>;
   roleIds?: Array<string>;
+  posts?: Array<any>;
+  postIds?: Array<string>;
   username?: string;
   nickname?: string;
   password?: string;
@@ -19,6 +21,7 @@ interface FormProps {
   formInline: FormItemProps;
   roleList: Array<any>;
   orgList: Array<any>;
+  postList: Array<any>;
 }
 
 export type { FormItemProps, FormProps };

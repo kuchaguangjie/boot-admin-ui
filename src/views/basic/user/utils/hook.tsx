@@ -4,6 +4,7 @@ import type { PaginationProps } from "@pureadmin/table";
 import { h, onMounted, reactive, ref } from "vue";
 import { treeOrg } from "@/api/basic/org";
 import { listRole } from "@/api/basic/role";
+import { postList } from "@/api/basic/post";
 import * as userApi from "@/api/basic/user";
 import type { FormItemProps } from "./types";
 import { addDrawer, closeDrawer } from "@/components/ReDrawer";
@@ -72,6 +73,7 @@ export function useUser() {
     formItems: SearchFormItems;
     dataSource: {
       enabledOptions: Array<any>;
+      postOptions: Array<any>;
     };
   }>({
     show: true,
@@ -103,6 +105,21 @@ export function useUser() {
       },
       {
         type: "select",
+        label: "所属岗位",
+        options: {
+          prop: "postId",
+          placeholder: "请选择所属岗位",
+          dataSourceKey: "postOptions",
+          clearable: true,
+          selectOptionKey: {
+            label: "name",
+            value: "id",
+            prop: "id"
+          }
+        }
+      },
+      {
+        type: "select",
         label: "状态",
         options: {
           prop: "enabled",
@@ -112,7 +129,8 @@ export function useUser() {
       }
     ],
     dataSource: {
-      enabledOptions: enabledOptions
+      enabledOptions: enabledOptions,
+      postOptions: []
     }
   });
   const tableData = reactive<{
@@ -213,6 +231,8 @@ export function useUser() {
           orgId: data?.org?.id ?? currentOrg?.value ?? "",
           roles: data?.roles ?? [],
           roleIds: data?.roles?.map((item: any) => item.id) ?? [],
+          posts: data?.posts ?? [],
+          postIds: data?.posts?.map((item: any) => item.id) ?? [],
           username: data?.username ?? "",
           nickname: data?.nickname ?? "",
           password: "",
@@ -225,7 +245,8 @@ export function useUser() {
           enabled: data?.enabled ?? true
         },
         roleList: roleData.value,
-        orgList: treeOrgData.dataList
+        orgList: treeOrgData.dataList,
+        postList: searchData.dataSource.postOptions
       },
       fullscreen: deviceDetection(),
       fullscreenIcon: true,
@@ -417,6 +438,7 @@ export function useUser() {
       avatar: formData.avatar,
       orgId: formData.orgId,
       roleIds: formData.roleIds,
+      postIds: formData.postIds,
       gender: formData.gender,
       system: false,
       enabled: formData.enabled
@@ -504,8 +526,15 @@ export function useUser() {
   }
   async function loadRoles() {
     const { success, data } = await listRole({ sorts: "created desc" });
+
     if (success) {
       roleData.value = data;
+    }
+  }
+  async function loadPosts() {
+    const { success, data } = await postList({ sorts: "sort" });
+    if (success) {
+      searchData.dataSource.postOptions = data;
     }
   }
   async function deleteUser(id) {
@@ -534,6 +563,7 @@ export function useUser() {
   onMounted(() => {
     loadDeptTree();
     loadRoles();
+    loadPosts();
     onSearch();
   });
 

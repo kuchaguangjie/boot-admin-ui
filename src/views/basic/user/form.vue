@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     id: undefined,
     roleIds: [],
+    postIds: [],
     orgId: undefined,
     username: "",
     nickname: "",
@@ -21,7 +22,8 @@ const props = withDefaults(defineProps<FormProps>(), {
     enabled: true
   }),
   orgList: () => [],
-  roleList: () => []
+  roleList: () => [],
+  postList: () => []
 });
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
@@ -143,6 +145,26 @@ defineExpose({ getRef });
           </el-select>
         </el-form-item>
       </re-col>
+      <re-col :value="24" :xs="24" :sm="24">
+        <el-form-item label="岗位" prop="postIds">
+          <el-select
+            v-model="newFormInline.postIds"
+            class="w-full"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择岗位"
+          >
+            <el-option
+              v-for="item in props.postList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </re-col>
+
       <re-col :value="12" :xs="24" :sm="24">
         <el-form-item label="性别" prop="gender">
           <ReSegmented
