@@ -308,7 +308,7 @@ export default defineComponent({
             >
               重置
             </el-button>
-            {props.hasUnfold && (
+            {props.hasUnfold && props.formItems.length > props.showNumber ? (
               <el-button type="primary" plain link onClick={_changeShowAll}>
                 {word.value}{" "}
                 {showAll.value ? (
@@ -321,7 +321,7 @@ export default defineComponent({
                   </el-icon>
                 )}
               </el-button>
-            )}
+            ) : null}
           </el-form-item>
         </el-form>
       </>
