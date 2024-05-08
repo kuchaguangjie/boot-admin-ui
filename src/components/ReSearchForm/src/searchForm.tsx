@@ -58,7 +58,6 @@ export default defineComponent({
   emits: ["search", "reset", "searchForm", "change", "calenderChange"],
   setup(props, { emit, attrs }) {
     const formDate = ref({});
-
     const inputItem = (item: SearchFormItem) => {
       if (item.type !== "input") return;
       return (
@@ -85,15 +84,15 @@ export default defineComponent({
           class="!w-[180px]"
           style="width: 100%"
         >
-          {props.dataSource[item.options?.dataSourceKey]?.map((item: any) => {
-            return (
+          {props?.dataSource[item.options?.dataSourceKey]?.map(
+            (option: any) => (
               <el-option
-                key={item[item.options?.selectOptionKey.value ?? "value"]}
-                label={item[item.options?.selectOptionKey.label ?? "label"]}
-                value={item[item.options?.selectOptionKey.value ?? "value"]}
+                key={option[item.options?.selectOptionKey?.value ?? "value"]}
+                label={option[item.options?.selectOptionKey?.label ?? "label"]}
+                value={option[item.options?.selectOptionKey?.value ?? "value"]}
               />
-            );
-          })}
+            )
+          )}
         </el-select>
       );
     };
@@ -153,7 +152,7 @@ export default defineComponent({
       /* eslint-disable @typescript-eslint/no-dynamic-delete */
       obj &&
         Object.keys(obj).forEach(key => obj[key] === null && delete obj[key]);
-      /* eslint-disable @typescript-eslint/no-dynamic-delete */
+
       return obj;
     }
     /**
@@ -210,7 +209,7 @@ export default defineComponent({
             (obj[key] === undefined || obj[key] === "" || obj[key] === null) &&
             delete obj[key]
         );
-      /* eslint-disable @typescript-eslint/no-dynamic-delete */
+
       emit("searchForm", obj);
     }
     /**
