@@ -1,6 +1,7 @@
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import type { SearchFormItem, SearchFormItems } from "./types";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { ArrowDown, ArrowUp } from "@element-plus/icons-vue";
 
 const props = {
   /**
@@ -46,6 +47,20 @@ const props = {
   formItems: {
     required: true,
     type: Array as PropType<SearchFormItems>
+  },
+  /**
+   * 展示条数
+   */
+  showNumber: {
+    type: Number,
+    default: 3
+  },
+  /**
+   * 是否展开
+   */
+  hasUnfold: {
+    type: Boolean,
+    default: true
   }
 };
 
@@ -58,6 +73,13 @@ export default defineComponent({
   emits: ["search", "reset", "searchForm", "change", "calenderChange"],
   setup(props, { emit, attrs }) {
     const formDate = ref({});
+
+    const showAll = ref(false);
+
+    const word = computed(() => {
+      return showAll.value ? "收起" : "展开";
+    });
+
     const inputItem = (item: SearchFormItem) => {
       if (item.type !== "input") return;
       return (
@@ -220,6 +242,14 @@ export default defineComponent({
       emit("search");
     }
 
+    /**
+     * 展开/收起
+     */
+    function _changeShowAll() {
+      console.log(showAll.value);
+      showAll.value = !showAll.value;
+    }
+
     return () => (
       <>
         <el-form
@@ -231,12 +261,28 @@ export default defineComponent({
           v-show={props.show}
           class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
         >
-          {props.formItems?.map((item: SearchFormItem) => {
+          {/* {props.formItems?.map((item: SearchFormItem) => {
             return (
               <el-form-item
                 label={item.label}
                 key={item.label}
                 v-show={item.hide ?? true}
+              >
+                {inputItem(item)}
+                {selectItem(item)}
+                {dateItem(item)}
+                {dateCycle(item)}
+              </el-form-item>
+            );
+          })} */}
+          {props.formItems?.map((item: SearchFormItem, index) => {
+            return (
+              <el-form-item
+                label={item.label}
+                key={item.label}
+                v-show={
+                  !props.hasUnfold || showAll.value || index < props.showNumber
+                }
               >
                 {inputItem(item)}
                 {selectItem(item)}
@@ -257,12 +303,25 @@ export default defineComponent({
             </el-button>
             <el-button
               plain
-              type=""
               icon={useRenderIcon("ri:refresh-line")}
               onClick={_searchReset}
             >
               重置
             </el-button>
+            {props.hasUnfold && (
+              <el-button type="primary" plain link onClick={_changeShowAll}>
+                {word.value}{" "}
+                {showAll.value ? (
+                  <el-icon>
+                    <ArrowUp />
+                  </el-icon>
+                ) : (
+                  <el-icon>
+                    <ArrowDown />
+                  </el-icon>
+                )}
+              </el-button>
+            )}
           </el-form-item>
         </el-form>
       </>
