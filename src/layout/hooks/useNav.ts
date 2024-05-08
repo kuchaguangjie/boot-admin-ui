@@ -67,13 +67,14 @@ export function useNav() {
   });
 
   const title = computed(() => {
-    return $config.Title;
+    // return $config.Title;
+    return useAuthStoreHook().getTenantInfo?.name ?? $config.Title;
   });
 
   /** 动态title */
   function changeTitle(meta: routeMetaType) {
-    const Title = getConfig().Title;
-    if (Title) document.title = `${meta.title} | ${Title}`;
+    // const Title = title
+    if (title) document.title = `${meta.title} | ${title}`;
     else document.title = meta.title;
   }
 

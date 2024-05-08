@@ -27,6 +27,8 @@ export const useAuthStore = defineStore({
     },
     tenantLogin: storageSession().getItem(authCache.isTenantLoginKey) ?? false,
     userInfo: storageSession().getItem(authCache.userKey),
+    tenantInfo: storageSession().getItem(authCache.tenantKey),
+    sysCode: storageSession().getItem(authCache.sysCode),
     accessToken: storageSession().getItem(authCache.tokenKey)
   }),
   getters: {
@@ -36,8 +38,11 @@ export const useAuthStore = defineStore({
     getAccessToken(state): string | null {
       return state.accessToken;
     },
-    getTenantId(state): string | null {
+    getSysCode(state): string | null {
       return state.userInfo?.sysCode;
+    },
+    getTenantInfo(state): any | undefined | null {
+      return state.tenantInfo;
     },
     getPermissions(state): string[] | undefined | null {
       return state.userInfo?.permissions;
@@ -55,6 +60,9 @@ export const useAuthStore = defineStore({
     },
     SET_IS_LOGIN_TENANT(tenantLogin?: boolean) {
       this.tenantLogin = tenantLogin;
+    },
+    SET_TENANT_INFO(tenantInfo: any) {
+      this.tenantInfo = tenantInfo;
     },
     _cacheRememberMe(data: LoginRequest) {
       if (data.rememberMe) {
@@ -82,10 +90,13 @@ export const useAuthStore = defineStore({
             this.SET_USERINFO(res.data);
             this.SET_ACCESS_TOKEN(res.data.token);
             this.SET_IS_LOGIN_TENANT(data.tenantLogin);
+            this.SET_TENANT_INFO(res.data.tenantInfo);
+
+            authCache.saveTenantInfo(res.data.tenantInfo);
             authCache.saveAuth(res.data);
             authCache.saveAccessToken(res.data.token);
             if (!data.tenantLogin) {
-              authCache.saveTenantKey(res.data.sysCode);
+              authCache.saveSysCode(res.data.sysCode);
             }
           }
           return res;

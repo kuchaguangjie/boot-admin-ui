@@ -110,12 +110,13 @@ router.beforeEach((to: ToRouteType, _from, next) => {
     }
   }
   const userInfo = useAuthStoreHook().getUserInfo;
+  const tenantInfo = useAuthStoreHook().getTenantInfo;
   NProgress.start();
   const externalLink = isUrl(to?.name as string);
   if (!externalLink) {
     to.matched.some(item => {
       if (!item.meta.title) return "";
-      const Title = getConfig().Title;
+      const Title = tenantInfo?.name ?? getConfig().Title;
       if (Title) document.title = `${item.meta.title} | ${Title}`;
       else document.title = item.meta.title as string;
     });

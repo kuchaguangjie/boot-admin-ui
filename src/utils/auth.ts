@@ -8,8 +8,9 @@ import Cookies from "js-cookie";
  * */
 export const multipleTabsKey = "multiple-tabs";
 export const userKey = "user-info";
+export const tenantKey = "tenant-info";
 export const tokenKey = "user-token";
-export const tenantKey = "user-tenant";
+export const sysCode = "sys-code";
 export const isTenantLoginKey = "tenant-login";
 
 /**
@@ -38,7 +39,11 @@ export const saveAccessToken = (token: string) => {
 export const isTenantLogin = (tenantLogin: string) => {
   return storageSession().setItem(isTenantLoginKey, tenantLogin);
 };
-export const saveTenantKey = (data: string) => {
+export const saveSysCode = (data: string) => {
+  return storageSession().setItem(sysCode, data);
+};
+
+export const saveTenantInfo = (data: any) => {
   return storageSession().setItem(tenantKey, data);
 };
 
@@ -49,6 +54,7 @@ export const clearAuth = () => {
   Cookies.remove(multipleTabsKey);
   storageSession().removeItem(tokenKey);
   storageSession().removeItem(userKey);
+  storageSession().removeItem(sysCode);
   storageSession().removeItem(tenantKey);
   storageSession().removeItem(isTenantLoginKey);
 };

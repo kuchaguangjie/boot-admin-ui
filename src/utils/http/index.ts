@@ -88,7 +88,7 @@ class PureHttp {
               if (token) {
                 config.headers["X-Access-Token"] = formatToken(token);
               }
-              const tenantId = useAuthStoreHook().getTenantId;
+              const tenantId = useAuthStoreHook().getSysCode;
               if (tenantId) {
                 config.headers["X-Tenant"] = tenantId;
               }
