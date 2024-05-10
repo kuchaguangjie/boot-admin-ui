@@ -126,7 +126,9 @@ export default defineComponent({
       }
     );
 
-    watch(() => props.size, handleResizeInit);
+    watch(() => props.size, handleResizeInit, {
+      immediate: true
+    });
 
     const rendLabel = () => {
       return props.options.map((option, index) => {
