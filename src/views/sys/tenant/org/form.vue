@@ -6,6 +6,7 @@ import { onMounted } from "vue";
 import { listProduct } from "@/api/sys/tenant/product";
 import { computed } from "vue";
 import { useFormRule } from "./utils/rules";
+import { ImageUpload } from "@/components/Attachment";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
@@ -70,6 +71,11 @@ defineExpose({ getRef });
               placeholder="请输入商户识别码"
               :disabled="isUpdate"
             />
+          </el-form-item>
+        </re-col>
+        <re-col :value="16" :xs="24" :sm="24">
+          <el-form-item label="商户LOGO" prop="logo">
+            <ImageUpload v-model="newFormInline.logo" />
           </el-form-item>
         </re-col>
         <re-col :value="16" :xs="24" :sm="24">

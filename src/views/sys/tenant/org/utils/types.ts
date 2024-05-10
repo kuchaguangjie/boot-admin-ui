@@ -2,6 +2,7 @@ interface FormItemProps {
   id?: string;
   name?: string;
   sysCode?: string;
+  logo?: string;
   linkMan?: string;
   linkTel?: string;
   linkEmail?: string;

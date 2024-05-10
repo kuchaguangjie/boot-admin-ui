@@ -40,7 +40,7 @@ export interface BasePageQuery {
  * @returns Promise<Result<P>>
  */
 export function post<E, T>(url: string, data?: E): Promise<Result<T>> {
-  return http.post<E, Result<T>>(url, { data: data });
+  return http.post<Result<T>, E>(url, { data: data });
 }
 
 /**
@@ -50,7 +50,7 @@ export function post<E, T>(url: string, data?: E): Promise<Result<T>> {
  * @returns Promise<Result<P>>
  */
 export function get<Q, T>(url: string, params?: Q): Promise<Result<T>> {
-  return http.get<Q, Result<T>>(url, { params });
+  return http.get<Result<T>, Q>(url, { params });
 }
 
 /**
@@ -80,4 +80,25 @@ export function del<Q, E, T>(
   data?: E
 ): Promise<Result<T>> {
   return http.request("delete", url, { params: params, data: data });
+}
+
+/**
+ * 上传文件
+ *
+ * @param url .
+ * @param data .
+ * @returns .
+ */
+export function upload<Q, E, T>(
+  url: string,
+  data: E,
+  params?: Q
+): Promise<Result<T>> {
+  return http.request("post", url, {
+    data: data,
+    params: params,
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
 }

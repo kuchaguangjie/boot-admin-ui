@@ -147,6 +147,7 @@ export function useOrg() {
           id: row?.id ?? undefined,
           name: row?.name ?? "",
           sysCode: row?.sysCode ?? "",
+          logo: row?.logo ?? "",
           linkMan: row?.linkMan ?? "",
           linkTel: row?.linkTel ?? "",
           linkEmail: row?.linkEmail ?? "",
