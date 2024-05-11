@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<UploadImageProps>(), {
   fileType: (): FileTypes[] => ["image/jpeg", "image/png", "image/gif"],
   height: "150px",
   width: "150px",
-  borderRadius: "8px",
+  borderradius: "8px",
   showDelete: true,
   showBtnText: true
 });

@@ -49,7 +49,7 @@ type UploadImageProps = {
   /**
    * 图片圆角,默认 `8px`
    */
-  borderRadius?: string;
+  borderradius?: string;
   /**
    * 是否显示删除按钮,默认 `true`
    */
