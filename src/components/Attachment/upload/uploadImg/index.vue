@@ -75,8 +75,8 @@ const uploadSuccess: UploadProps["onSuccess"] = (res: any) => {
   <div class="upload-box">
     <el-upload
       :id="id"
-      :accept="props.fileType.join(',')"
       v-loading="loading"
+      :accept="props.fileType.join(',')"
       :action="'#'"
       :before-upload="beforeUpload"
       :class="['upload', drag ? 'no-border' : '']"
