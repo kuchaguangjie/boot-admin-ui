@@ -7,6 +7,16 @@ import type { UploadRawFile, UploadRequestOptions } from "element-plus";
  * @returns
  */
 export const useUpload = () => {
+  //合并两种上传方式
+  async function uploadRequest(options: UploadRequestOptions) {
+    // 判断文件大小 2M 以下后端上传，2M 以上前端直传
+    const sized = options.file.size > 1024 * 1024 * 5;
+    if (sized) {
+      return uploadFile(options);
+    } else {
+      return uploadPreSignedUrl(options);
+    }
+  }
   // 第一种前端直传
   async function uploadPreSignedUrl(options: UploadRequestOptions) {
     const filename = generateFileName(options.file);
@@ -79,6 +89,7 @@ export const useUpload = () => {
   }
 
   return {
+    uploadRequest,
     uploadPreSignedUrl,
     uploadFile
   };
