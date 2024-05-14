@@ -70,6 +70,7 @@ export default defineComponent({
     function handleChange({ option, index }, event: Event) {
       if (props.disabled || option.disabled) return;
       event.preventDefault();
+      segmentedItembg.value = "";
       curIndex.value = index;
       emit("change", { index, option });
       emit("update:modelValue", option.value);
@@ -128,6 +129,16 @@ export default defineComponent({
 
     watch(() => props.size, handleResizeInit, {
       immediate: true
+    });
+
+    watch(modelValue, () => {
+      if (modelValue.value !== undefined || modelValue.value !== null) {
+        props.options.forEach((e, index) => {
+          if (e.value === modelValue.value) {
+            curIndex.value = index;
+          }
+        });
+      }
     });
 
     const rendLabel = () => {

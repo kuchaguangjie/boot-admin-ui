@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as attchmentApi from "@/api/common/attachment";
-import type { UploadRawFile, UploadRequestOptions } from "element-plus";
+import type { UploadRequestOptions } from "element-plus";
 
 /**
  *  上传文件
@@ -61,12 +61,56 @@ export const useUpload = () => {
     });
   }
 
+  // 纯文件上传
+  async function uploadRequestFile(file: File) {
+    // 判断文件大小 2M 以下后端上传，2M 以上前端直传
+    const sized = file.size > 1024 * 1024 * 5;
+    if (sized) {
+      return new Promise((resolve, reject) => {
+        attchmentApi
+          .uploadFile({ file: file })
+          .then(res => {
+            if (!res.success) {
+              reject(`上传失败:${res.message}`);
+            } else {
+              resolve({ data: res.data.permalink });
+            }
+          })
+          .catch(() => {
+            reject("上传失败");
+          });
+      });
+    } else {
+      const filename = generateFileName(file);
+      // 生成预签名地址
+      const { success, data } = await attchmentApi.getPresignedUrl(
+        filename,
+        file.type
+      );
+      if (!success) {
+        return Promise.reject("获取预签名地址失败");
+      }
+      // 上传文件
+      return axios
+        .put(data.uploadUrl, file, {
+          headers: {
+            "Content-Type": file.type
+          }
+        })
+        .then(() => {
+          // 上传后记录上传信息
+          createFile(filename, file, data);
+          return { data: data.accessUrl };
+        });
+    }
+  }
+
   /**
    *  创建上传的文件信息
    * @param name
    * @param file
    */
-  async function createFile(name: string, file: UploadRawFile, data: any) {
+  async function createFile(name: string, file: File, data: any) {
     const body = {
       displayName: name,
       mediaType: file.type,
@@ -80,7 +124,7 @@ export const useUpload = () => {
    * 生成文件名
    * @param file
    */
-  function generateFileName(file: UploadRawFile) {
+  function generateFileName(file: File) {
     // 生成文件名
     const filename = `${file.name.substring(0, file.name.lastIndexOf("."))}_${new Date().getTime()}`;
     // 拼接后缀
@@ -91,6 +135,7 @@ export const useUpload = () => {
   return {
     uploadRequest,
     uploadPreSignedUrl,
-    uploadFile
+    uploadFile,
+    uploadRequestFile
   };
 };

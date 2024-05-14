@@ -171,7 +171,7 @@ export function useAttachment() {
       ...searchData.data,
       current: pagination.currentPage,
       size: pagination.pageSize,
-      sorts: "created"
+      sorts: "created desc"
     };
     const { success, data } = await attachmentApi
       .attachmentPage(params)

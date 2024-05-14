@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { store } from "..";
 import * as authCache from "@/utils/auth";
 import * as authRequest from "@/api/auth";
+
 import { useMultiTagsStoreHook } from "./multiTags";
 import { routerArrays } from "@/layout/types";
 import router, { resetRouter } from "@/router";
@@ -39,7 +40,7 @@ export const useAuthStore = defineStore({
       return state.accessToken;
     },
     getSysCode(state): string | null {
-      return state.userInfo?.sysCode;
+      return state.sysCode;
     },
     getTenantInfo(state): any | undefined | null {
       return state.tenantInfo;
@@ -110,6 +111,12 @@ export const useAuthStore = defineStore({
         }
         return res;
       });
+    },
+    async setUserAvatarAction(avatar: string) {
+      const userInfo: any = storageSession().getItem(authCache.userKey);
+      userInfo.avatar = avatar;
+      this.SET_USERINFO(userInfo);
+      authCache.saveAuth(userInfo);
     },
     /**
      * 注销,清空缓存

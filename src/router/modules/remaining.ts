@@ -36,5 +36,28 @@ export default [
         component: () => import("@/layout/redirect.vue")
       }
     ]
+  },
+  {
+    path: "/user/profile",
+    component: Layout,
+    redirect: "/user/profile/settings",
+    meta: {
+      title: "个人中心",
+      icon: "ep:profile",
+      showLink: false,
+      rank: 103
+    },
+    children: [
+      {
+        path: "/user/profile/settings",
+        name: "UserProfileSettings",
+        component: () => import("@/views/user-profile/settings.vue"),
+        meta: {
+          title: "个人设置",
+          showLink: false,
+          showParent: false
+        }
+      }
+    ]
   }
 ] satisfies Array<RouteConfigsTable>;

@@ -14,6 +14,7 @@ import { useAuthStoreHook } from "@/store/modules/auth";
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill";
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill";
 import { isAllEmpty, useGlobal } from "@pureadmin/utils";
+import { useMultiTagsStore } from "@/store/modules/multiTags";
 
 const errorInfo =
   "The current routing configuration is incorrect, please check the configuration";
@@ -24,6 +25,8 @@ export function useNav() {
   const routers = useRouter().options.routes;
   const { isFullscreen, toggle } = useFullscreen();
   const { wholeMenus } = storeToRefs(usePermissionStoreHook());
+  const { handleTags } = useMultiTagsStore();
+
   /** 平台`layout`中所有`el-tooltip`的`effect`配置，默认`light` */
   const tooltipEffect = getConfig()?.TooltipEffect ?? "light";
 
@@ -78,6 +81,17 @@ export function useNav() {
     else document.title = meta.title;
   }
 
+  /** */
+  function openUserProfilePanel() {
+    handleTags("push", {
+      path: "/user/profile/settings",
+      name: "UserProfileSettings",
+      meta: {
+        title: "个人中心"
+      }
+    });
+    router.push({ name: "UserProfileSettings" });
+  }
   /** 退出登录 */
   function logout() {
     useAuthStoreHook().logout();
@@ -133,6 +147,7 @@ export function useNav() {
     title,
     device,
     layout,
+    openUserProfilePanel,
     logout,
     routers,
     $storage,

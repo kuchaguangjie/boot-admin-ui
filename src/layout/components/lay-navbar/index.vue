@@ -9,11 +9,13 @@ import LaySidebarBreadCrumb from "../lay-sidebar/components/SidebarBreadCrumb.vu
 import LaySidebarTopCollapse from "../lay-sidebar/components/SidebarTopCollapse.vue";
 
 import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
+import UserSettings from "@iconify-icons/ri/user-settings-line";
 import Setting from "@iconify-icons/ri/settings-3-line";
 
 const {
   layout,
   device,
+  openUserProfilePanel,
   logout,
   onPanel,
   pureApp,
@@ -56,6 +58,10 @@ const {
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
+            <el-dropdown-item @click="openUserProfilePanel">
+              <IconifyIconOffline :icon="UserSettings" style="margin: 5px" />
+              个人中心
+            </el-dropdown-item>
             <el-dropdown-item @click="logout">
               <IconifyIconOffline
                 :icon="LogoutCircleRLine"
