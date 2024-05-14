@@ -85,7 +85,7 @@ export const useAuthStore = defineStore({
     login(data: LoginRequest): Promise<any> {
       this._cacheRememberMe(data);
       return authRequest
-        .login(data.username, data.password, data.tenantLogin)
+        .login(data.username, data.password)
         .then((res: Result<any>) => {
           if (res.success) {
             this.SET_USERINFO(res.data);

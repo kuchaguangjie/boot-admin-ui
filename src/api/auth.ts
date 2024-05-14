@@ -8,14 +8,10 @@ import * as http from "@/api/base";
  * @param tenantLogin 管理端登录
  * @returns
  */
-export function login(username: string, password, tenantLogin?: boolean) {
+export function login(username: string, password) {
   // password en
   const _pwd = RSA.loginEncrypt(password);
-  return http.post("/auth/login", {
-    username,
-    password: _pwd,
-    tenantLogin: tenantLogin
-  });
+  return http.post(`/auth/login?username=${username}`, _pwd);
 }
 
 /**
