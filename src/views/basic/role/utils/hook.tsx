@@ -191,6 +191,8 @@ export function useRole() {
           id: data?.id ?? undefined,
           name: data?.name ?? "",
           code: data?.code ?? "",
+          dataScope: data?.dataScope ?? 0,
+          orgIds: data?.orgIds ?? [],
           description: data?.description ?? "",
           enabled: data?.enabled ?? true
         }

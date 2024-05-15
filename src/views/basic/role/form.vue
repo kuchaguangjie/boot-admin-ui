@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { FormProps } from "./utils/types";
 import ReSegmented from "@/components/ReSegmented";
 import { setFormRule } from "./utils/rules";
-import { enabledOptions } from "@/utils/constants";
+import { enabledOptions, dataScopeOptions } from "@/utils/constants";
+import { treeOrg } from "@/api/basic/org";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     code: "",
     name: "",
+    dataScope: 0,
+    orgIds: [],
     enabled: true,
     description: ""
   })
@@ -16,11 +19,21 @@ const props = withDefaults(defineProps<FormProps>(), {
 
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
+const orgTreeData = ref([]);
 
 function getRef() {
   return ruleFormRef.value;
 }
+async function loadDept() {
+  const { success, data } = await treeOrg({ sorts: "created" });
+  if (success) {
+    orgTreeData.value = data;
+  }
+}
 
+onMounted(() => {
+  loadDept();
+});
 defineExpose({ getRef });
 </script>
 
@@ -45,6 +58,35 @@ defineExpose({ getRef });
         v-model="newFormInline.name"
         clearable
         placeholder="请输入角色名称"
+      />
+    </el-form-item>
+    <el-form-item label="角色范围" prop="dataScope">
+      <ReSegmented
+        v-model="newFormInline.dataScope"
+        :options="dataScopeOptions"
+        @change="
+          ({ option: { value } }) => {
+            newFormInline.dataScope = value;
+          }
+        "
+      />
+    </el-form-item>
+
+    <el-form-item
+      v-if="newFormInline.dataScope === 3"
+      label="数据范围"
+      prop="orgIds"
+    >
+      <el-tree-select
+        v-model="newFormInline.orgIds"
+        :data="orgTreeData"
+        multiple
+        :render-after-expand="false"
+        show-checkbox
+        check-strictly
+        check-on-click-node
+        :props="{ label: 'name', children: 'children' }"
+        value-key="id"
       />
     </el-form-item>
 

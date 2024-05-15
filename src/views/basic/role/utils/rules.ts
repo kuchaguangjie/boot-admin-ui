@@ -24,6 +24,18 @@ export const formRules = reactive(<FormRules>{
       },
       trigger: "blur"
     }
+  ],
+  dataScope: [{ required: true, message: "数据权限为必填项", trigger: "blur" }],
+  orgIds: [
+    {
+      validator: (rule, value, callback) => {
+        if (formData.value?.dataScope === 3 && !value?.length) {
+          callback(new Error("数据范围为必填项"));
+        }
+        callback();
+      },
+      trigger: "blur"
+    }
   ]
 });
 

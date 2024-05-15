@@ -186,3 +186,22 @@ export const genderOptions = [
     value: 0
   }
 ];
+
+export const dataScopeOptions = [
+  {
+    label: "全部数据",
+    value: 0
+  },
+  {
+    label: "本级机构",
+    value: 1
+  },
+  {
+    label: "本级及子级机构",
+    value: 2
+  },
+  {
+    label: "自定义数据范围",
+    value: 3
+  }
+];

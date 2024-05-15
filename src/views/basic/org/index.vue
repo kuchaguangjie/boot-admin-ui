@@ -45,7 +45,6 @@ defineOptions({
           adaptive
           border
           :adaptiveConfig="{ offsetBottom: 45 }"
-          align-whole="center"
           row-key="id"
           :size="size"
           :columns="dynamicColumns"
