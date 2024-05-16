@@ -2,8 +2,19 @@
 import { ArrowRight, ArrowLeft } from "@element-plus/icons-vue";
 import type { CalendarDateType, CalendarInstance } from "element-plus";
 import { Solar, Lunar, HolidayUtil } from "lunar-typescript";
-
+import CalendarTag from "./tag.vue";
 import { ref, computed } from "vue";
+
+const props = defineProps({
+  showHoliday: {
+    type: Boolean,
+    default: true
+  },
+  showJieqi: {
+    type: Boolean,
+    default: true
+  }
+});
 const calendarRef = ref<CalendarInstance>();
 const emits = defineEmits(["select"]);
 function changeDate(type: CalendarDateType) {
@@ -82,9 +93,7 @@ function handleSelect(data) {
   <el-calendar ref="calendarRef">
     <template #header="{ date }">
       <!---mac calender-->
-      <div class="calendar-header">
-        <span>{{ date }}</span>
-      </div>
+      <span class="calendar-title">{{ date }}</span>
       <div class="calendar-header">
         <el-button-group>
           <el-button :icon="ArrowLeft" @click="changeDate('prev-month')" />
@@ -106,24 +115,11 @@ function handleSelect(data) {
             <span>日</span>
           </div>
         </div>
-        <!--节假日-->
-        <div v-if="isHoliday(data.date)" class="calendar-tag holiday">
-          <!--是否调休-->
-          <template v-if="isHoliday(data.date).isWork()">
-            <span
-              >{{ isHoliday(data.date).getName() }}
-              <span class="">(班)</span></span
-            >
-          </template>
-          <template v-else>
-            <span>{{ isHoliday(data.date).getName() }}</span>
-          </template>
-        </div>
-        <!--节气-->
-        <div v-if="lunar(data.date).getCurrentJie()" class="calendar-tag jieqi">
-          <span>{{ lunar(data.date).getCurrentJie() }}</span>
-        </div>
-
+        <CalendarTag
+          :date="data.date"
+          :show-holiday="props.showHoliday"
+          :show-jieqi="props.showJieqi"
+        />
         <!--自定义-->
         <slot :data="data" />
       </div>
@@ -141,6 +137,12 @@ function handleSelect(data) {
 
 ::v-deep(.el-calendar-table td.is-selected) {
   background-color: var(--el-fill-color-blank);
+}
+
+.calendar-title {
+  margin-right: 10px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .calendar-cell {
@@ -164,24 +166,6 @@ function handleSelect(data) {
       background-color: var(--el-color-primary);
       border-radius: 50%;
     }
-  }
-
-  .calendar-tag {
-    padding: 2px 0;
-    margin-top: 5px;
-    font-size: 12px;
-    text-align: center;
-    border-radius: 5px;
-  }
-
-  .holiday {
-    color: white;
-    background-color: var(--el-color-success);
-  }
-
-  .jieqi {
-    color: white;
-    background-color: var(--el-color-warning);
   }
 }
 </style>
